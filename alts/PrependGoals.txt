@@ -1,0 +1,114 @@
+##############
+## variables
+##############
+
+//set rescity 1,1
+set rescity 697,112
+
+set trainer trainer
+set defender defender
+
+set res_string f:300m,w:5m,i:5m,s:5m
+
+set troop_limit a:111k
+
+set gold_min 5m
+set food_min 2d
+set wood_min 2m
+set iron_min 2m
+set stone_min 1m
+
+###################
+## end variables ##
+###################
+
+config trade:1
+
+reportstokeep 1 a:500 b:2 a:3800 a:6000
+
+config comfort:1
+comfortpolicy 15 20 popraise 
+distancepolicy 20 20 10 10 12
+//distancepolicy 10 5 5 10 12
+// max distance _Farm _flats _Search medal _Aquire_Valley _Map_size
+
+//rallypolicy npc:7
+
+keepcapturedheroes any:lvl>90|any:base>68,att>52,pol>49|any:base>68,att>52,int>49|any:base>70
+
+config hero:10
+config trainpol:1,training:1,trainint:1
+config feastinghallspace:1
+config fasthero:72
+
+config acquireflats:1
+config abandonflats:1
+
+config troopqueuetime:1
+config troopsusepopmax:1
+config troopidlequeuetime:5
+config troopincrement:1
+
+config gate:0.1
+config attackgap:10
+config hiding:0.2
+gatepolicy 2 0 0 0 1
+
+config npc:1
+config npclimit:9999
+config buildnpc:15
+npcbuildpolicy /level:5 /mindistance:1 /maxdistance:20
+npcbuildpolicy /level:10 /mindistance:1 /maxdistance:20
+
+config valley:10
+config valleymin:1
+#safevalleyfarm 9,10
+config hunting:2
+
+farmingpolicy 1 mindistance:1 maxdistance:4 farmingcycle:8 safeballs:25
+farmingpolicy 2 mindistance:1 maxdistance:5 farmingcycle:8 safeballs:63
+farmingpolicy 3 mindistance:1 maxdistance:6 farmingcycle:8 safeballs:165
+farmingpolicy 4 mindistance:1 maxdistance:7 farmingcycle:8 safeballs:315
+farmingpolicy 5 mindistance:1 maxdistance:12 mincycle:6 maxcycle:8 safeballs:520
+//
+farmingpolicy 6 mindistance:1 maxdistance:8 farmingcycle:8
+farmingpolicy 7 mindistance:1 maxdistance:8 farmingcycle:8
+farmingpolicy 8 mindistance:1 maxdistance:9 farmingcycle:8
+farmingpolicy 9 mindistance:1 maxdistance:3 farmingcycle:8
+farmingpolicy 10 mindistance:1 maxdistance:9 farmingcycle:8
+
+config embassy:1
+config monitorarmy:1
+
+processingpolicy /start:03:30:00 /end:06:59:59 b n a r t !m !v !s
+processingpolicy /start:07:00:00 /end:23:59:59 v m n b t r a s 
+processingpolicy /start:00:00:00 /end:03:29:59 a n b v m s t r
+
+#processingpolicy /start=03:30:00 /end=06:59:59 b=40 q=39 n:30 a=20 r=5 t=5 !m !v !s
+#processingpolicy /start=07:00:00 /end=23:59:59 q=31 n=30 a=15 r=12 b=10 t=5 m=11 v=10 s=9
+#processingpolicy /start=00:00:00 /end=03:29:59 q=31 n=30 v=25 a=20 m=19 s=18 r=10 t=6 b=5
+
+
+#npctroop [#] troop:#
+npctroop 1 a:10k,wo:2k,warr:1k,p:1,sw:1,cav:1,cata:1
+#npctroop 5 b:500,r:10,wo:100,warr:1000,p:1,sw:10,cav:1,cata:1,t:400
+#npctroop 5 a:20k,s:1k,wo:3k,warr:3k,p:100,sw:200,cav:1,cata:2,t:0
+npctroop 6 a:70k,wo:2k,warr:6k,s:1k,p:148,sw:250,cav:1,cata:1,t:500
+npctroop 7 a:70k,wo:2k,warr:2k,s:1k,p:3k,sw:500,cav:1,cata:1,t:600
+npctroop 8 a:79.9k,wo:4k,warr:3.1k,s:1.2k,p:800,sw:998,cav:1,cata:1,t:1000
+npctroop 9 a:79k,b:3k,wo:1k,warr:5k,s:2.5k,p:1750,sw:248,cav:1,cata:1,t:1450
+// 190+ atk heroes
+npctroop 10 a:92.9k,r:2,wo:1300,warr:800,s:3k,p:75,sw:60,cav:1,cata:2,t:1860
+// 300+ atk heroes
+#npctroop 10 a:92.9k,wo:1300,warr:800,s:3k,p:75,sw:60,cav:2,cata:3,t:1860
+// 90k for lvl 9 rally
+#npctroop 10 a:84k,r:245,wo:1250,warr:900,s:1600,p:80,sw:60,cav:2,cata:3,t:1860
+
+
+taxpolicy 0 100
+gatepolicy 2 2 2 2 2
+
+defensepolicy /junktroop:100 /usewarhorn:0 /usecorselet:0 /usepenicillin:0 /usetruce:95 /usespeech:1
+
+#rallypolicy n:10:1 n:8 v:1 m:1
+rallypolicy n:10:1 n:6 m:4 v:4 

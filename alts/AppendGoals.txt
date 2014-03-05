@@ -1,0 +1,81 @@
+#valleytroops 1 a:50
+#valleytroops 2 a:100
+#valleytroops 3 a:200
+#valleytroops 4 a:400,sw:1,p:1,s:1,w:1
+#valleytroops 5 a:800,sw:1,p:1,s:1,w:1,c:1
+#valleytroops 6 a:1600,sw:1,p:1,s:1,w:1,c:1
+#valleytroops 7 a:10000,sw:1,p:1,s:1,w:1,c:1,b:1
+#valleytroops 8 a:15000,sw:1,p:1,s:1,w:1,c:1,b:1
+#valleytroops 9 a:20000,sw:1,p:1,s:1,w:1,c:1,b:1
+#valleytroops 10 a:30000,sw:1,p:1,s:1,w:1,c:1,b:1
+
+##valleytroops s:100k
+valleyheroes any,!%trainer%,!%defender%
+
+
+//fortification tre:11k
+
+fortification tra:1,ab:1,at:1
+fortification tra:10,ab:10,at:10
+fortification tra:100,ab:100,at:100
+fortification tra:1000,ab:1000,at:17000,r:100,tre:100
+
+traininghero %trainer% 120 300 2
+nolevelheroes any:level>100|%trainer%:level>190
+
+//=============
+// npc farming
+//=============
+
+npcheroes 1 any,!%trainer%,!%defender%
+npcheroes 2 any,!%trainer%,!%defender%
+npcheroes 3 any,!%trainer%,!%defender%
+npcheroes 4 any,!%trainer%,!%defender%
+npcheroes 5 any,!%trainer%,!%defender%
+npcheroes 6 any:att>130,intel>50,base>62|any:att>51,pol>200,base>62
+npcheroes 7 any:att>150,intel>50,base>62|any:pol>51,att>150,base>62|any:att>240,pol>240
+npcheroes 8 any:att>170,intel>50,base>62|any:pol>51,att>170,base>62|any:att>240,pol>240
+npcheroes 9 %trainer%,%defender%
+npcheroes 10 %trainer%,%defender%
+
+npclimits 10 %troop_limit%
+npclimits 9 a:1m
+npclimits 8 %troop_limit%
+npclimits 7 %troop_limit%
+npclimits 6 %troop_limit%
+// %troop_limit% to enable /disable npcfarming [#] lvl
+
+
+//==================
+// troop building - for farming 10s 
+// =================
+
+// base troops
+troop w:1,wo:1,s:1,p:1,sw:1,a:1,c:1,cata:1
+troop b:500,t:500
+troop c:1k,wo:1k
+troop b:1500,t:1500
+troop b:5k,t:5k
+troop s:150k,t:30k
+
+troop w:100,s:100,p:100,sw:100,a:100,cata:100
+troop a:150k,w:100k,wo:5000,s:25000,t:15k,b:5k,c:1k
+troop a:200k,w:300k,s:100k,p:3k,sw:3k,wo:5k,r:50
+troop s:300k,a:300k
+
+tradepolicy /type:gold /min:%gold_min%
+tradepolicy /type:food /min:%food_min%  /allowselltomin
+tradepolicy /type:wood /min:%wood_min% /allowselltomin
+tradepolicy /type:stone /min:%stone_min%  /allowselltomin
+tradepolicy /type:iron /min:%stone_min%  /allowselltomin
+
+requestresources any gold 5m 10m 1m scout
+requestresources any food 25m 50m 1m scout
+requestresources any iron 1m 2m 1m scout
+requestresources any wood 1m 2m 1m scout
+requestresources any stone 1m 2m 1m scout
+
+keepresources %rescity% %res_string% -1
+
+research lu:9,mi:9,mas:9
+research met:9,in:9,ms:9,mt:9,ir:9,lo:9,com:9,ho:6,ar:9,con:9,med:9,mac:9,en:9
