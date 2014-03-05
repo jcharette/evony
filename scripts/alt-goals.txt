@@ -1,0 +1,142 @@
+set trainer bigking
+// training hero
+nolevelheroes any:level>100
+
+set rescity 55,438
+// where to send our extra res to
+
+set res_string f:400m,w:5m,i:5m
+
+set troop_limit a:111k
+// npcfarming %troop_Limit%  sets lvl 6-10 
+
+
+#################
+# end variables #
+#################
+reportstokeep 1 a:500 b:2 a:3800 a:6000
+
+config comfort:1
+comfortpolicy 15 20 popraise 
+distancepolicy 20 20 10 10 30
+rallypolicy npc:7
+keepcapturedheroes any:level>=60
+
+config hero:10
+config trainpol:1
+config training:1
+config feastinghallspace:1
+config fasthero:72
+
+traininghero %trainer% 120 300
+
+config acquireflats:1
+config abandonflats:1
+
+fortification tra:1
+fortification tra:1,ab:1,at:1
+fortification tra:10,ab:10,at:10
+fortification tra:100,ab:100,at:100
+fortification tra:1000,ab:1000,at:17000,r:100,tre:100
+config troopqueuetime:1
+config troopsusepopmax:1
+config troopidlequeuetime:5
+config troopincrement:1
+
+//config reservedbarrack:1
+config nomayor:0
+
+config gate:0.1
+config attackgap:10
+config hiding:0.2
+gatepolicy 2 0 0 0 1
+
+config npc:5
+config npclimit:9999
+config buildnpc:10
+npcbuildpolicy /level:10 /mindistance:1 /maxdistance:20
+
+defensepolicy /usespeech:8 /usetruce:4 /usewarhorn:1 /usecorselet:1 /usepenicillin:0
+config valley:10
+config valleymin:1
+safevalleyfarm 9,10
+
+//=============
+// npc farming
+//=============
+
+npcheroes 6 any:att>130,intel>50,base>62|any:att>51,pol>200,base>62
+npcheroes 7 any:att>150,intel>50,base>62|any:pol>51,att>150,base>62|any:att>240,pol>240
+npcheroes 8 any:att>170,intel>50,base>62|any:pol>51,att>170,base>62|any:att>240,pol>240
+npcheroes 9 %trainer%
+npcheroes 10 %trainer%
+
+npclimits 10 %troop_limit%
+npclimits 9 a:1m
+npclimits 8 %troop_limit%
+npclimits 7 %troop_limit%
+npclimits 6 %troop_limit%
+// %troop_limit% to enable /disable npcfarming [#] lvl
+
+config npclimit:99
+// farms npc's w/ xports until a 99 day supply of food
+
+config npc:1
+// farm npc 1-5, set to 1 if no ballista in city
+
+farmingpolicy 1 mindistance:1 maxdistance:4 farmingcycle:8 safeballs:25
+farmingpolicy 2 mindistance:1 maxdistance:5 farmingcycle:8 safeballs:63
+farmingpolicy 3 mindistance:1 maxdistance:6 farmingcycle:8 safeballs:165
+farmingpolicy 4 mindistance:1 maxdistance:7 farmingcycle:8 safeballs:315
+farmingpolicy 5 mindistance:1 maxdistance:12 mincycle:6 maxcycle:8 safeballs:520
+//
+farmingpolicy 6 mindistance:1 maxdistance:8 farmingcycle:8
+farmingpolicy 7 mindistance:1 maxdistance:8 farmingcycle:8
+farmingpolicy 8 mindistance:1 maxdistance:9 farmingcycle:8
+farmingpolicy 9 mindistance:1 maxdistance:3 farmingcycle:8
+farmingpolicy 10 mindistance:1 maxdistance:9 farmingcycle:8
+
+#npctroop [#] troop:#
+#npctroop 1 a:10k,wo:2k,warr:1k,p:1,sw:1,cav:1,cata:1
+#npctroop 5 b:500,r:10,wo:100,warr:1000,p:1,sw:10,cav:1,cata:1,t:400
+#npctroop 5 a:20k,s:1k,wo:3k,warr:3k,p:100,sw:200,cav:1,cata:2,t:0
+npctroop 6 a:70k,wo:2k,warr:6k,s:1k,p:148,sw:250,cav:1,cata:1,t:500
+npctroop 7 a:70k,wo:2k,warr:2k,s:1k,p:3k,sw:500,cav:1,cata:1,t:600
+npctroop 8 a:79.9k,wo:4k,warr:3.1k,s:1.2k,p:800,sw:998,cav:1,cata:1,t:1000
+npctroop 9 a:79k,b:3k,wo:1k,warr:5k,s:2.5k,p:1750,sw:248,cav:1,cata:1,t:1450
+// 190+ atk heroes
+#npctroop 10 a:92.9k,r:2,wo:1300,warr:800,s:3k,p:75,sw:60,cav:1,cata:2,t:1860
+// 300+ atk heroes
+npctroop 10 a:92.9k,wo:1300,warr:800,s:3k,p:75,sw:60,cav:2,cata:3,t:1860
+// 90k for lvl 9 rally
+#npctroop 10 a:84k,r:245,wo:1250,warr:900,s:1600,p:80,sw:60,cav:2,cata:3,t:1860
+
+//==================
+// troop building
+// =================
+
+troop w:1,wo:1,s:1,p:1,sw:1,a:1,c:1,cata:1
+troop w:100,wo:1000,s:100,p:100,sw:100,a:100,cata:100,t:1k,b:1k
+troop a:150k,w:100k,wo:5000,s:5000,t:15k,b:5k
+troop a:200k,w:300k
+troop t:150k,s:300k,a:300k
+troop a:300k
+
+config embassy:1
+config monitorarmy:1
+
+config trade:1
+tradepolicy /type:gold /min:5m
+tradepolicy /type:food /min:2d  /allowselltomin
+tradepolicy /type:wood /min:2m /allowselltomin
+tradepolicy /type:stone /min:1m  /allowselltomin
+tradepolicy /type:iron /min:2m  /allowselltomin
+
+requestresources any food 25m 50m 1m scout
+requestresources any iron 1m 2m 1m scout
+requestresources any wood 1m 2m 1m scout
+requestresources any stone 1m 2m 1m scout
+keepresources %rescity% %res_string% 100m
+
+config wartown:0
+

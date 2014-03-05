@@ -1,0 +1,138 @@
+label autorun
+// Farmer town
+
+// list the valleys coords
+1: x = 603
+2: y = 178
+
+
+//auto release hero switch
+//0 off 1 on
+3: release = 1
+
+// list the heros to be used and not used
+set vheros !big1,!big2,!polly,any
+
+// # of attacks sent to the valley
+4: waves = 7
+
+
+// Name towns 1-4
+// NOTE: Can support 4 towns.
+5: farming_order = 1
+
+
+
+// Give the lowest level of valley you want to farm
+6: min_valley_level = 8
+
+
+// Set the troops you want to use
+// or use the default sets
+7: troops10 = 'a:30k,cata:1,p:1,sw:1,c:1,w:1,wo:1,b:500,r:5k,s:1'
+8: troops9 = 'a:30k,cata:1,p:1,sw:1,c:1,s:1'
+
+//set the march time for your troops rounding up in minutes
+9: march9 = 3
+10: march10 = 8
+
+
+
+
+
+// non user entry below
+set maintsleep 1800
+11: hcount = 0
+12: mcount = 0
+13: scount = 0
+
+
+label recheck
+14: id = ( y * 800 ) + x
+15: level = GetLevel(id)
+16: if level < 1 goto recheck
+17: if m_city.cityManager.fields.length < city.getBuildingLevel(31) goto short_valley
+18: echo "Location (" + x + "," + y + ") is level " + level
+19: ifgoto ( level < min_valley_level ) exit
+
+
+20: hr = [ '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+21: mn = [ '00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
+22: sc = [ '01', '08', '15', '22', '29', '36', '43', '50', '57']
+
+
+23: echo "Setting up the first attack time"
+
+24: mcount = floor(((date().toString().split(" ")[3].split(":")[1] * 12) / 60) + 2)
+25: if mcount > 11 mcount = mcount - 11
+26: echo mcount
+27: if mcount > 2 hcount = (date().toString().split(" ")[3].split(":")[0] * 1) MOD 24
+28: if mcount <= 2 hcount = (date().toString().split(" ")[3].split(":")[0] * 1) + 1 MOD 24
+29: m = (mn[mcount] * 1)
+
+
+
+
+30: army = troops10
+31: ifgoto ( level == 10 ) send
+32: army = troops9
+33: ifgoto ( level >= min_valley_level ) send
+
+
+
+
+
+
+
+label send
+34: execute "attack " + x + "," + y + " %vheros% " + army + " @:" + hr[hcount] + ":" + (m + (farming_order - 1)) + ":" + sc[scount]
+35: scount = scount + 1
+36: execute "loop send " + (waves)
+
+label maintain
+37: scount = 0
+38: if release != 0 releasehero any
+39: ifgoto ( m_city.cityManager.NumberOfRealAttacks > 0 ) farm_pause
+40: ifgoto (  m_context.maintenanceStart >= 1 ) holding
+41: sleep rnd:10:20
+42: if m_city.cityManager.selfArmies.length < 4 goto time_set
+43: goto maintain
+
+label time_set
+44: mcount = (mcount + 1) MOD 11
+45: m = mn[mcount] * 1
+46: if mcount != 0 hcount = (date().toString().split(" ")[3].split(":")[0] * 1) MOD 24
+47: if mcount = 0 hcount = (date().toString().split(" ")[3].split(":")[0] * 1) + 1 MOD 24
+48: goto send
+
+
+
+
+
+
+
+label holding
+49: recall %valley%
+50: sleep %maintsleep%
+51: loop recheck
+
+label farm_pause
+52: print YOU ARE UNDER ATTACK!!!
+53: print Recalling troops and sleeping for 45 min
+54: execute "recall " + x +"," + y
+55: sleep 2700
+56: print times up! Starting over...
+57: goto recheck
+
+label short_valley
+58: echo Your town is not full on valleys.
+59: echo Recalling troops and pausing
+60: echo for 30 min.
+61: sleep 1800
+62: echo Time's up! Lets check again.
+63: goto recheck
+
+label exit
+64: print valley level below entered number
+65: print exiting script
+66: end

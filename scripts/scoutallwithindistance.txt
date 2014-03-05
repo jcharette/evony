@@ -1,0 +1,36 @@
+// Find and scout all cities within "x" distance.  
+distance=10
+
+// coords to search
+// city.x and city.y are these cities coords, 
+// change if you want to search someone else
+x = city.x
+y = city.y
+
+// type 11 = cities
+Cities=FindField(x, y, distance, 11) 
+j=-1
+label ScoutNext
+j=j+1
+if j=Cities.length goto End
+Temp = GetDetailInfo(Cities[j],true)
+if !Temp repeat
+
+// check truce/holiday/busted?
+if Temp.state == 2 goto ScoutNext
+if Temp.state == 5 goto ScoutNext
+if Temp.state == 6 goto ScoutNext
+if !Temp.canScout goto ScoutNext
+
+// check relation 1/5/6, we scout (red/other/none)
+relation = RelationIndex(Temp)
+if relation == 1 goto Scout
+if relation == 5 goto Scout
+if relation == 6 goto Scout
+goto ScoutNext
+label Scout
+execute "print scouting " + GetX(Cities[j]) + "," + GetY(Cities[j])
+execute "scout " + GetX(Cities[j]) + "," + GetY(Cities[j]) + " any s:100k"
+goto ScoutNext
+
+label End

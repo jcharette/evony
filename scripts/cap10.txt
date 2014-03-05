@@ -1,0 +1,61 @@
+// set this to the location you want to cap
+set 10cap 290,571
+// this should be your biggest hero
+set bighero jim
+// this should be your second largest hero
+set secondhero carter
+
+set firstwave a:100k,w:7496,p:2500,sw:2500,wo:1,s:1,c:1,cata:1
+
+// Set this delay to the difference + 1 second between wave 1 and wave 2
+// after you have run testtimes once
+set delay 00:00:43
+
+// First run testtimes and set your delay.  comment out testtimes
+// then run scout to scout down to a low hero in the 10 (try for something under lvl 10)
+// comment out scout when you're ready to take
+// then run with takeit and enjoy
+
+goto testtimes
+goto scout
+goto takeit
+goto end
+
+/////////////////////////////////////////
+// Don't change anything from here under
+/////////////////////////////////////////
+
+label testtimes
+travelinfo %10cap% %firstwave%
+travelinfo %10cap% w:40k
+goto end
+
+label scout
+scout %10cap% any s:1k
+goto end
+
+label takeit
+useitem war horn
+// round 1
+bigattack %10cap% %bighero% a:100k,w:7496,p:2500,sw:2500,wo:1,s:1,c:1,cata:1
+sleep %delay%
+attack %10cap% %secondhero% w:40k
+gosub spam
+
+label round2
+waithero %bighero%
+attack %10cap% %bighero% a:35k,w:10k
+attack %10cap% %secondhero% a:30k,w:10k
+gosub spam
+goto round2
+
+label spam
+attack %10cap% any w:30k
+repeat 2
+attack %10cap% any w:25k
+repeat 2
+attack %10cap% any w:20k
+repeat 3
+gosubreturn
+
+label end

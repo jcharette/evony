@@ -1,0 +1,26 @@
+The better treb hits
+1. Treb town needs to cap a valley 1 mile from the attacking town.
+2. Reinforce the valley with a hero and 100K scouts.
+
+
+label autorun
+//your treb city
+1: ifgoto ( city.fortification.rockfall < 10k ) build
+2: sleep 10
+3: loop
+label build
+4: walldefense treb 11000
+5: loop
+
+
+
+
+label autorun
+//attacking cities:
+// x1,y1 = valley
+// x2,y2 = treb town to hit
+1: attack x1,y1  junkheroname s:1
+2: sleep 1
+3: attack x2,y2  mainheroname s:22000
+4: sleep 1
+5: loop

@@ -1,0 +1,218 @@
+//-------------------------------------------------------------------------------------//
+//This is a level 10 NPC converter that gives you a number of build configurations.
+//It will let you build any fields you want, and select a common level to build 
+//them to (build levels will need to be greater than 2).
+//Internal building also has a few options, you can choose the number of cottages
+//and barracks to build, the level to build to, and whether or not to remove the
+//forge, workshop and stable.
+//If you want 23 cottages and 1 barrack, it will do it for you.
+//-------------------------------------------------------------------------------------//
+
+FARMS = 0
+SAWMILLS = 40
+IRONMINES = 0
+QUARRIES = 0
+RESOURCE_FIELD_LEVEL = 9     //Change to 10 to use Mich scripts to level fields to 10    
+COTTAGES = 9
+COTTAGE_LEVEL = 10           //only used if building more than 20 cottages
+BARRACKS = 15                //There's 24 positions available for cottages and barracks
+BARRACKS_LEVEL = 9
+REMOVE_FORGE_WORKSHOP_STABLE = "yes"   //if set to no, then only 21 positions available
+
+//--------------------Nothing to alter below here--------------------------------------//
+
+if FARMS + SAWMILLS + IRONMINES + QUARRIES != 40 goto resourceBuildError
+if REMOVE_FORGE_WORKSHOP_STABLE = "yes" if COTTAGES + BARRACKS =! 24 internalBuildError1
+if REMOVE_FORGE_WORKSHOP_STABLE = "no" if COTTAGES + BARRACKS =! 21 internalBuildError2
+
+farmsToRemove = max(0, 37 - FARMS)
+farmsToAdd = max(0, FARMS - 37)
+sawmillsToAdd = max(0, SAWMILLS - 1)
+ironminesToAdd = max(0, IRONMINES - 1)
+quarriesToAdd = max(0, QUARRIES - 1)
+cottagesToRemove = max(0, 20 - COTTAGES)
+cottagesToAdd = max(0, COTTAGES - 20)
+barracksToAdd = max(0, BARRACKS - 1)
+
+
+gosub dropInn
+if farmsToRemove > 0 gosub removeFarms
+if SAWMILLS = 0 gosub removeSawmills 
+if IRONMINES = 0 gosub removeIronmines
+if QUARRIES = 0 gosub removeQuarries
+if farmsToAdd > 0 if RESOURCE_FIELD_LEVEL < 10 gosub buildFarms
+if farmsToAdd > 0 if RESOURCE_FIELD_LEVEL = 10 gosub buildFarms10
+if sawmillsToAdd > 0 if RESOURCE_FIELD_LEVEL < 10 gosub buildSawmills
+if sawmillsToAdd > 0 if RESOURCE_FIELD_LEVEL = 10 gosub buildSawmills10
+if ironminesToAdd > 0 if RESOURCE_FIELD_LEVEL < 10 gosub buildIronmines
+if ironminesToAdd > 0 if RESOURCE_FIELD_LEVEL = 10 gosub buildIronmines10
+if quarriesToAdd > 0 if RESOURCE_FIELD_LEVEL < 10 gosub buildQuarries
+if quarriesToAdd > 0 if RESOURCE_FIELD_LEVEL = 10 gosub buildQuaries10
+if REMOVE_FORGE_WORKSHOP_STABLE = "yes" gosub removeFoWsSt
+if cottagesToRemove > 0 gosub removeCottages  
+if cottagesToAdd > 0 if COTTAGE_LEVEL < 10 gosub buildCottages
+if cottagesToAdd > 0 if COTTAGE_LEVEL = 10 gosub buildCottages10
+if barracksToAdd > 0 if BARRACKS_LEVEL < 10 gosub buildBarracks
+if barracksToAdd > 0 if BARRACKS_LEVEL = 10 gosub buildBarracks10
+
+echo "All done."
+end
+
+label dropInn
+demo inn level10
+demo inn
+repeat 8
+gosubreturn
+
+label removeFarms
+demo f level10
+execute "repeat " + farmsToRemove
+demo f
+execute "repeat " + farmsToRemove * 9
+gosubreturn
+
+label removeSawmills
+demo s level10
+demo s
+repeat 9
+gosubreturn
+
+label removeIronmines
+demo i level10
+demo i
+repeat 9
+gosubreturn
+
+label removeQuarries
+demo q level10
+demo q
+repeat 9
+gosubreturn
+
+label buildFarms
+create f
+execute "repeat " + farmsToAdd
+upgrade f lo
+execute "repeat " + (farmsToAdd * (RESOURCE_FIELD_LEVEL - 1))
+gosubreturn
+
+label buildFarms10
+create f
+execute "repeat " + farmsToAdd
+upgrade f lo
+execute "repeat " + (farmsToAdd * (RESOURCE_FIELD_LEVEL - 2))
+upgrade f level9
+execute "repeat " + farmsToAdd
+gosubreturn
+
+label buildSawmills
+create s
+execute "repeat " + sawmillsToAdd
+upgrade s lo
+execute "repeat " + (sawmillsToAdd * (RESOURCE_FIELD_LEVEL - 1))
+gosubreturn
+
+label buildSawmills10
+create s
+execute "repeat " + sawmillsToAdd
+upgrade s lo
+execute "repeat " + (sawmillsToAdd * (RESOURCE_FIELD_LEVEL - 2))
+upgrade s level9
+execute "repeat " + sawmillsToAdd
+gosubreturn
+
+label buildIronmines
+create i
+execute "repeat " + ironminesToAdd
+upgrade i lo
+execute "repeat " + (ironminesToAdd * (RESOURCE_FIELD_LEVEL - 1))
+gosubreturn
+
+label buildIronmines10
+create i
+execute "repeat " + ironminesToAdd
+upgrade i lo
+execute "repeat " + (ironminesToAdd * (RESOURCE_FIELD_LEVEL - 2))
+upgrade i level9
+execute "repeat " + ironminesToAdd
+gosubreturn
+
+label buildQuarries
+create q
+execute "repeat " + quarriesToAdd
+upgrade q lo
+execute "repeat " + (quarriesToAdd * (RESOURCE_FIELD_LEVEL - 1))
+gosubreturn
+
+label buildQuarries10
+create q
+execute "repeat " + quarriesToAdd
+upgrade q lo
+execute "repeat " + (quarriesToAdd * (RESOURCE_FIELD_LEVEL - 2))
+upgrade q level9
+execute "repeat " + quarriesToAdd
+gosubreturn
+
+label removeFoWsSt
+demo fo level10
+demo fo
+repeat 9
+demo st level10
+demo st 
+repeat 9
+demo ws level10
+demo ws
+repeat 9
+gosubreturn
+
+label removeCottages
+demo c level10
+execute "repeat " + cottagesToRemove
+demo c
+execute "repeat " + cottagesToRemove * 9
+gosubreturn
+
+label buildCottages
+create c
+execute "repeat " + cottagesToAdd
+upgrade c lo
+execute "repeat " + (cottagesToAdd * (RESOURCE_FIELD_LEVEL - 1))
+gosubreturn
+
+label buildCottages10
+create c
+execute "repeat " + cottagesToAdd
+upgrade c lo
+execute "repeat " + (cottagesToAdd * (RESOURCE_FIELD_LEVEL - 2))
+upgrade c level9
+execute "repeat " + cottagesToAdd
+gosubreturn
+
+label buildBarracks
+create b
+execute "repeat " + barracksToAdd
+upgrade b lo
+execute "repeat " + (barracksToAdd * (RESOURCE_FIELD_LEVEL - 1))
+gosubreturn
+
+label buildBarracks10
+create b
+execute "repeat " + barracksToAdd
+upgrade b lo
+execute "repeat " + (barracksToAdd * (RESOURCE_FIELD_LEVEL - 2))
+upgrade b level9
+execute "repeat " + barracksToAdd
+gosubreturn
+
+label resourceBuildError
+echo "Number of resources fields needs to total 40"
+end
+
+label internalBuildError1
+echo "Cottages and Barracks must total 24"
+end
+
+label internalBuildError2
+echo "Cottages and Barracks must total 21"
+end
+//-------------------------------------------------------------------------------------//

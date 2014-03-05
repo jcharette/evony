@@ -1,0 +1,49 @@
+1: scanmap 400,400 500
+
+Friesland
+\listcastles 0,0 199,199
+
+SAXONY
+\listcastles 200,0 399,199
+
+N. March
+\listcastles 400,0 599,199
+
+Bohemia
+\listcastles 600,0 799,199
+
+LL
+\listcastles 0,200 199,399
+
+Franconia
+\listcastles 200,200 399,399
+
+Thuringia
+\listcastles 400,200 599,399
+
+Moravia
+\listcastles 600,200 799,399
+
+Upper Lorraine
+\listcastles 0,400 199,599
+
+Sbwabia
+\listcastles 200,400 399,599
+
+Bavaria
+\listcastles 400,400 599,599
+
+Corinthia
+\listcastles 600,400 799,599
+
+Burg
+\listcastles 0,600 199,799
+
+Lombardy
+\listcastles 200,600 399,799
+
+Tuscany
+\listcastles 400,600 599,799
+
+Romagna
+\listcastles 600,900 799,799

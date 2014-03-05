@@ -1,0 +1,74 @@
+//----------------------Medal Farmer------------------------//
+//----------------------------------------------------------//
+//This uses the cap and release method to obtain medals.    //
+//Just choose your target, the number of waves, and heroes  //
+//to use. It is up to you to make sure heroes are available //
+//and to maintain troops. You can customise the GAP between //
+//hits, a low archer check, the time it pauses for          //
+//maintenance, and the troops to send. Your valley should be//
+//held over maint if it's not too far from your city.       //
+//----------------------------------------------------------//
+X = 615
+Y = 576
+WAVES = 7
+HEROES = "any,!notMe"
+ARCH_CHECK = 100000        //set to 0 to disable this feature
+GAP = 22                   //seconds between hits
+MAINT_PAUSE = 60           //in minutes
+
+TROOPS_LVL1_3 = "a:100"
+TROOPS_LVL4_6 = "s:1,p:1,sw:1,a:10k,c:1,cata:1"
+TROOPS_LVL7_9 = "s:1,p:1,sw:1,a:20k,c:1,cata:1"
+TROOPS_LVL10 = "wo:1,w:1,s:1,p:1,sw:1,a:30k,c:1,cata:1,b:100"
+//----------------------------------------------------------//
+valleyId = GetFieldId(X, Y)
+label recheck
+level = GetLevel(valleyId)
+if level < 0 goto recheck
+if level > 0 if level < 4 TROOPS = TROOPS_LVL1_3
+if level > 3 if level < 7 TROOPS = TROOPS_LVL4_6
+if level > 6 if level < 10 TROOPS = TROOPS_LVL7_9
+if level = 10 TROOPS = TROOPS_LVL10
+marchTime = (city.getTravelTime(city.fieldId, GetFieldId(X, Y), GetTroops(TROOPS), 5))
+
+label start
+i = 1
+j = 1
+if m_context.maintenanceStart goto maintenancePause
+if ARCH_CHECK != 0 if ( m_city.cityManager.troop.archer < ARCH_CHECK ) goto lowArchers
+execute "abandon " + X + "," + Y
+time=(date().toString().split(" ")[3]).toString().split(":")
+
+label attack
+seconds = time[2]*1 + marchTime + GAP * i
+execute "waithero " + HEROES
+execute "attack " + X + "," + Y + " " + HEROES + " " + TROOPS + " " + " @:" + time[0] + ":" + time[1] + ":" + seconds
+if i = WAVES goto abandon
+i = i + 1
+goto attack
+
+label abandon
+seconds = time[2]*1 + marchTime + GAP * j + GAP / 2
+execute "sleep @:" + time[0] + ":" + time[1] + ":" + seconds
+label next
+execute "abandon " + X + "," + Y
+execute "sleep " + (GAP - 4)
+j = j + 1
+if j = WAVES goto pause
+goto next
+
+label pause
+recallall
+if m_context.maintenanceStart goto maintenancePause
+seconds = time[2]*1 + marchTime * 2 + GAP * WAVES
+execute "sleep " + marchTime
+goto start
+
+label maintenancePause
+execute "sleep " + MAINT_PAUSE * 60
+goto start
+
+label lowArchers
+echo "You got too low on archers."
+end
+//----------------------------------------------------------//

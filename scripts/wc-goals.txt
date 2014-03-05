@@ -1,0 +1,454 @@
+///========================================
+/// For First city Tab Only!
+/// The one with the * in the button 
+///========================================
+// lines starting with "#" are disabled commands
+// lines starting with "//" are comments
+// Set warnings, reports, maintence in "Global Settings" tab 
+//config warrules:8
+// announcement of incomming attacks every 8 min Alliance Chat
+#schedulepolicy 9:30 11:00 12:00 13:00 14:00 16:00 17:30 08:30
+// start stop the bot
+///---------------------------------------
+
+//*****************************************
+// start goal %variables% 
+//*****************************************
+set trainer icu
+// enters BestAtkHero name as %trainer% 
+set defender wardog
+// City %defender% hero (best atk+Int city hero)
+
+set help_cities ohare
+// Detroit|Chicago or coord1|coord2
+// %help_cities% closest cities request help (food by cav) 50 mi
+set cities ohare|6
+// other nearby %cities% to request from 150 mi
+set hub_city ohare
+// %hub_city% =hubcity or next in daisy chain to send extra resources to
+// enable lines #keepresources %Hub_city% %res_string% 100m
+
+set transfer_city xxx,yyy
+// %transfer_city% = another account's city to send resources to
+// enable line "sendresource %transfer_city% gold 200m -1 100m transport"
+
+set res_string f:4b,w:35m,i:35m,s:1b,g:200m
+// max resources to keep in city, send extra
+// used= "keepresources %Hub_city% %res_string% 100m"
+
+set troop_limit a:300k
+// npcfarming %troop_Limit%  sets lvl 6-10 
+
+set trade 1
+// %trade% 1=on 0=off
+set food_max 250b
+set wood_max 100b
+set iron_max 100b
+set stone_max 100b
+// trading limits to buy or sell
+//
+
+#excludelist 111,222 111,333 111,444
+//flats/valleys/nps not be attacked/acquired/abandoned/recalled by the bot
+
+#NPCBOUNDS [#] <xmin> <xmax> <ymin> <ymax>
+// farm between these boundaries for npc#
+
+#npclist [#] xx1,yy1 xx2,yy2 xx3,yy3
+// only farm these coord for npc#
+
+#npcexcludelist xx1,yy1 xx2,yy2 xx3,yy3
+#npc10excludelist xx1,yy1 xx2,yy2 xx3,yy3
+// don't farm these coord
+
+//*****************************************
+// end goal %variables% 
+//*****************************************
+
+//========================================
+// BEGIN City Goals R.2M
+//========================================
+
+// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+config wartown:1
+// :1 stops all npc & valley farming! :2 also keeps trainghero in city
+#wartownpolicy 06:00 12:00
+// used with config wartown:1 or wartown:2 to  to put the bot in wartown mode at certain hours
+
+//config abandon:0
+//run evacuatetown (script) before you set this goal! (abandon:1 =>loy=0)
+#npcteams 2
+// # number of ballista teams to farm & # ballista teams to evade
+// enable this when under attack
+// homeheroes 3
+// min # of heros to keep home in FH
+
+config keepatthome:1
+// keeps an high attack hero in FH to defend if set to 1
+
+config hiding:0.4
+// (min) before attackers arrive to evade transports, npc teams & layers
+config attackgap:20
+// gap between waves to consider as one to evade
+config gate:0.20
+// 0.2 min=12s open/close gate time
+
+gatepolicy 2 0 0 0 1
+// gatepolicy (peace) (atk) (SB) (Both) (Maint) {0=bot 1=open 2=closed}
+
+// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+///=======================================
+/// Hero Management
+///---------------------------------------
+
+traininghero %trainer% 120 300 1
+// hero to train troops in multiple cities
+// min & max time (sec) to stay in city, # 10 runs
+
+valleyheroes any,!%defender%,!%trainer%:att<380,att>50|any:pol>60,att>30,pol<350
+npcheroes any,!%defender%,!%trainer%:att<440,att>60|any:pol>60,pol<best
+spamheroes any:points<150,base<50
+// "any:atk=Best" "Worst"
+// any:attack<best|!name (!=NOT)
+
+#npcheroes 6 any:att>130,intel>50,base>62|any:att>51,pol>200,base>62
+#npcheroes 7 any:att>150,intel>50,base>62|any:pol>51,att>150,base>62|any:att>240,pol>240
+#npcheroes 8 any:att>170,intel>50,base>62|any:pol>51,att>170,base>62|any:att>240,pol>240
+#npcheroes 9 %trainer%
+npcheroes 10 %trainer%
+#npcheroes 10 any:att>240,int>60|any:att>240,pol>240
+// any,!hero3:att>265
+// '|' = OR  ',' =&
+// http://guide.duelingelectrons.com/index.php?title=Hero_Goals#HeroString
+
+// nolevelheroes any:int>att,att>45,int>60|any:attack>240,pol>55
+// heroes not to auto up level
+
+config hero:20
+// 1 rewards hero and levels to highest attribute
+// or 20 to auto hire/fire until 2 good pol the rest attack heroes.
+
+config fasthero:71
+// Hire heroes with 61 base. Fire heroes under lvl 50 to make room
+// "config hero:1" must also be changed to "hero:20" to enable fast hero
+
+config feastinghallspace:1
+// # feasting hall slots to keep open {fast hero}
+
+#capturedfirelimit 170
+#herofirelimit 110
+// YAEB & OBot
+keepcapturedheroes any:level>=170
+keepheroes any:level>=110|any:base>=72
+// NEAT
+// lvl to auto release/fire
+
+config trainpol:1
+// send POL heros npc farming 
+#config trainInt:1
+// send Intl hero npc farming
+config training:1
+// 0 - Only farm for food stop at npclimit
+// 1 - train hero and send transporters even if food is over npclimit.
+// 2 - raise hero experience, no transports sent if over npclimit
+//----------------------------------------
+config training10:1
+
+///=======================================
+// configure city
+///---------------------------------------
+
+reportstokeep 1 a:500 b:2 a:2500 a:9000
+// Keep reports if:
+//{Item Won!} exceed {valley} {npc5} less {npc10} exceed {npc10} 
+
+config comfort:1
+// automatically comfort
+comfortpolicy 15 31 popraise
+taxpolicy 6 100
+
+config troopidlequeuetime:18
+// if an idle barrack: queue [min] troop build using best available hero
+##config troopdelbadque:1
+// delete lag caused bad queue where training hero was not used
+
+config troopqueuetime:1.5
+// queue 1.5 hour troop builds 
+config troopincrement:1
+//queue is ratio based
+config reservedbarrack:1
+// 1 =keep 1 barrack available for layer builds if attacked 
+config troopsusereserved:0.65
+// % daily food reserve not to use for troop builds 
+config fortsusereserved:0.85
+// % daily resource reserve to use for wall builds 
+config troopsusepopmax:1
+// 0 =use no resource workers to 1= use all population 
+config wallqueuetime:0.066
+// queue 4.0 minute wall builds 
+
+
+distancepolicy 10 20 5 25 15
+//distancepolicy 10 5 5 10 12
+// max distance _Farm _flats _Search medal _Aquire_Valley _Map_size
+
+processingpolicy /start:03:30:00 /end:06:59:59 b n a r t !m !v !s
+processingpolicy /start:07:00:00 /end:23:59:59 v m n b t r a s 
+processingpolicy /start:00:00:00 /end:03:29:59 a n b v m s t r
+
+rallypolicy n:10:2 n:6 b:3 v:4 m:3 t:1
+//# of each mission to send from the rally.
+
+warehousepolicy 50 25 5 20
+// %food %lumber %stone %iron
+
+defensepolicy /junktroop:500 /usespeech:5 /usetruce:80 /usewarhorn:0 /usecorselet:1 /usepenicillin:0
+config embassy:1
+// 0=closed 1=open 2=defensecooldown
+config defensecooldown:180
+// minutes to keep embassy open after an attack
+config monitorarmy:1
+// recall if attack target changes after launch
+
+config acquireflats:1
+config abandonflats:1
+// auto flat flipping, range set by distance policy
+
+
+config buildnpc:10
+//npcbuildpolicy /level:5 /mindistance:10 /maxdistance:20
+//npcbuildpolicy /level:7 /mindistance:1 /maxdistance:2
+//npcbuildpolicy /level:8 /mindistance:1 /maxdistance:3
+npcbuildpolicy /level:10 /mindistance:1 /maxdistance:20
+
+config trade:%trade%
+// trade 0 = off, 1+ = on
+tradepolicy /type:gold /min:2b
+tradepolicy /type:food /min:7d /max:%food_max% /batch:500k
+tradepolicy /type:wood /min:500m /max:%wood_max% /batch:50k /allowselltomin
+tradepolicy /type:stone /min:1b /max:%stone_max% /batch:500k /allowselltomin
+tradepolicy /type:iron /min:500m /max:%iron_max% /batch:50k /allowselltomin
+
+///=======================================
+///  transfer
+///---------------------------------------
+
+requesttroops any scout 50k 100k 50k
+requesttroops %help_cities% cavalry 100 500 10
+requesttroops %help_cities% cataphract 500 100 10
+requesttroops %help_cities% pikemen 1k 2k 1k
+requesttroops %help_cities% swordsmen 1k 2k 1k
+requesttroops %help_cities% archer 100k 200k 100k
+requesttroops %help_cities% warrior 10k 20k 10k
+// {coords/cityname} {troop type} {min city} {min request_city} {request_qty}
+
+#sendtroops xx1,yy1 a 15k -1 10k
+// {coords/cityname} {troop type} {min city} {min send_city} {trip_qty}
+
+#keeptroops xx1,yy1 a:150k,warr:40k 10k
+// {coords/cityname} {troop_string amounts to keep in city} {min_trip_qty}
+
+#sendresource %transfer_city% gold 2b -1 100m transport
+#sendresource %transfer_city% food 1b -1 100m transport
+#sendresource %transfer_city% wood 30m 10m 10m transport
+//{coords/city1|city2} {resource type} {min city} {min send_city} {send_amount} {send_troop}
+// use -1 as {min_send_city} amount to transfer to another alliance member
+
+requestresources any gold 500m 20m 100k scout
+requestresources any wood 500k 15m 250k scout
+requestresources any iron 500k 15m 250k scout
+requestresources any stone 5m 10m 1m scout
+requestresources any food 1m 100m 1m scout
+requestresources %help_cities% food 10m 500m 4m cavalry
+requestresources %help_cities% wood 10m 30m 4m cavalry
+requestresources %help_cities% iron 10m 30m 4m cavalry
+#requestresources %cities% food 50m 1.1b 100m transport
+#requestresources any food 50b 1b 20m cavalry
+requestresources %hub_city% food 250b 2b 1b transport
+requestresources %hub_city% wood 5m 100m 20m cavalry
+requestresources %hub_city% iron 5m 100m 20m cavalry
+requestresources %hub_city% stone 50m 1.1b 200m transport
+// request resources from multiple cities
+//{coords/city name} {resource type} {min this city} {min target city} {request amount} {troop to send with}
+
+//keepresources %hub_city% %res_string% 100m
+// {coords/city1|city2} {resource min to keep} {minimum trip qty}
+// guide:Resource_Goals#Keepresource
+
+///=======================================
+//   npc Goals
+///---------------------------------------
+
+npclimits 10 %troop_limit%
+#npclimits 9 a:1m
+#npclimits 8 %troop_limit%
+#npclimits 7 %troop_limit%
+#npclimits 6 %troop_limit%
+// %troop_limit% to enable /disable npcfarming [#] lvl
+
+config npclimit:99
+// farms npc's w/ xports until a 99 day supply of food
+
+config npc:1
+// farm npc 1-5, set to 1 if no ballista in city
+
+farmingpolicy 1 mindistance:1 maxdistance:4 farmingcycle:8 safeballs:25
+farmingpolicy 2 mindistance:1 maxdistance:5 farmingcycle:8 safeballs:63
+farmingpolicy 3 mindistance:1 maxdistance:6 farmingcycle:8 safeballs:165
+farmingpolicy 4 mindistance:1 maxdistance:7 farmingcycle:8 safeballs:315
+farmingpolicy 5 mindistance:1 maxdistance:20 mincycle:6 maxcycle:8 safeballs:520
+//
+#farmingpolicy 6 mindistance:1 maxdistance:8 farmingcycle:8
+#farmingpolicy 7 mindistance:1 maxdistance:8 farmingcycle:8
+#farmingpolicy 8 mindistance:1 maxdistance:9 farmingcycle:8
+#farmingpolicy 9 mindistance:1 maxdistance:3 farmingcycle:8
+farmingpolicy 10 mindistance:1 maxdistance:20 farmingcycle:4
+
+#npctroop [#] troop:#
+#npctroop 1 a:10k,wo:2k,warr:1k,p:1,sw:1,cav:1,cata:1
+#npctroop 5 b:500,r:10,wo:100,warr:1000,p:1,sw:10,cav:1,cata:1,t:400
+#npctroop 5 a:20k,s:1k,wo:3k,warr:3k,p:100,sw:200,cav:1,cata:2,t:0
+#npctroop 6 a:70k,wo:2k,warr:6k,s:1k,p:148,sw:250,cav:1,cata:1,t:500
+#npctroop 7 a:70k,wo:2k,warr:2k,s:1k,p:3k,sw:500,cav:1,cata:1,t:600
+#npctroop 8 a:79.9k,wo:4k,warr:3.1k,s:1.2k,p:800,sw:998,cav:1,cata:1,t:1000
+#npctroop 9 a:79k,b:3k,wo:1k,warr:5k,s:2.5k,p:1750,sw:248,cav:1,cata:1,t:1450
+// 190+ atk heroes
+#npctroop 10 a:92.9k,r:2,wo:1300,warr:800,s:3k,p:75,sw:60,cav:1,cata:2,t:1860
+// 300+ atk heroes
+#npctroop 10 a:92.9k,wo:1300,warr:800,s:3k,p:75,sw:60,cav:2,cata:3,t:1860
+npctroop 10 a:96k,w:2k,t:2k
+
+// 90k for lvl 9 rally
+#npctroop 10 a:84k,r:245,wo:1250,warr:900,s:1600,p:80,sw:60,cav:2,cata:3,t:1860
+
+
+
+///=======================================
+/// Valley and Medal hunting goals
+///---------------------------------------
+#config valleymin:2,valley:10
+// take unoccupied valleys, will take lower lvl if higher not available
+
+valleytroops 10 w:60k,a:20k,s:1,p:1,sw:1,c:1,cata:1
+#valleytroops 10 wo:30k,warr:29994,s:1,p:1,sw:1,a:40k,cav:1,cata:1
+valleytroops 9 wo:20k,warr:30k,s:1,p:1,sw:1,a:30k,cav:1,cata:1
+valleytroops 8 wo:20k,warr:24k,s:1,p:1,sw:1,a:15k,cav:1,cata:1
+// valleytroops [valley-level] troop-string
+// otherwise uses same troop mix for all valley lvl
+
+#config hunting:4
+// medal hunt on lvl 9 and 10 valleys
+// =5  lvl 10 valleys only
+
+safevalleyfarm 9,10
+// prescouts valleys for no loss valley farming R1078
+// either safevalleyfarm or valleyfarming NOT both enabled
+// use safevalley farming on if you need medals!
+
+# valleyfarming 5 5 5 5 5 5
+// _forest,_desert,_hill,_swamp,_grassland,_lake
+//  valley distance limit 
+
+## find nations!
+#valleyfarming 0 0 0 5 0 0
+#huntingtype swamp
+
+///=======================================
+/// Construction goals
+///-----------------------------------
+
+build b:0:5,c:10:19
+#build sawmill:9:5
+#build sawmill:10:3
+#build iron:9:4
+#build quarry:9:1
+#build farm:0:32
+#build barrack:9:17
+#build stable:0:0
+#build warehouse:9:1
+#build forge:0:0
+#build workshop:0:0
+#build inn:0:0
+#build cottage:0:18
+//------------------------
+
+// build Building_Name:level:quanity
+
+
+///---------------------------------------
+///    Troop training sequence
+///---------------------------------------
+troop /idlequeuetime:0.5 /usereserved:1 cav:1
+troop /idlequeuetime:0.5 /usereserved:1 cav:2,cata:1
+troop /idlequeuetime:0.5 /usereserved:1 cav:3,cata:2
+troop /idlequeuetime:0.5 /usereserved:1 cav:4,cata:3
+troop /idlequeuetime:1 /usereserved:1 p:1,cav:5,cata:4,s:1
+troop /idlequeuetime:1 /usereserved:1 p:8,cav:6,cata:6,s:10
+troop /idlequeuetime:1 /usereserved:1 p:16,cav:8,cata:8,s:20,warr:4,sw:8,wo:2
+troop /idlequeuetime:1 /usereserved:1 p:32,cav:12,cata:12,sw:16,wo:4
+troop /idlequeuetime:1 /usereserved:1 p:64,cav:16,cata:16,sw:32
+troop /idlequeuetime:1 /usereserved:1 p:96,cav:20,cata:20,sw:64
+troop /idlequeuetime:1 p:128,cav:30,cata:30,sw:128,warr:100,b:1,ram:1,a:1,wo:32
+troop /idlequeuetime:2 p:256,cav:40,cata:40,sw:256
+troop /idlequeuetime:2 p:512,cav:50,cata:50
+troop /idlequeuetime:2 p:1k,sw:500,warr:1k,wo:250
+troop /idlequeuetime:3 p:1k,sw:1k
+troop /idlequeuetime:4 a:2k,p:2k,sw:2k,warr:10k,wo:2k
+troop /idlequeuetime:10 ram:10,cp:100
+troop /idlequeuetime:10 p:4k,cav:150,cata:150
+troop /idlequeuetime:15 a:24k
+troop /idlequeuetime:20 s:100k
+//troop /idlequeuetime:30 s:500k a:500k
+//troop /idlequeuetime:30 s:1m,a:1m
+troop /idlequeuetime:30 wo:5k,w:250k,s:100k,p:5k,sw:5k,a:100k,t:5k,b:5k,c:5k,cata:2k
+troop /idlequeuetime:30 w:250k,a:250k,c:25k,cata:15k,s:150k
+troop /idlequeuetime:30 wo:10k,w:300k,s:600k,p:10k,sw:10k,a:500k,t:50k,b:30k,c:50k,cata:50k
+troop /idlequeuetime:30 b:100k,cp:30k,a:800k,t:200k
+troop /idlequeuetime:30 s:10m,a:1.2m,c:200k,cata:100k,t:400k,b:110k,r:100k,cp:100k,p:150k,sw:150k,w:1m
+troop /idlequeuetime:30 s:6m,a:2.2m,c:400k,cata:200k,t:225k,b:210k,cp:200k
+troop /idlequeuetime:30 s:9m,a:3.2m,c:600k,cata:300k,t:325k,b:310k,cp:300k,r:200k
+troop /idlequeuetime:30 s:12m,a:4.2m,c:800k,cata:400k,t:1m,b:410k,cp:400k
+troop /idlequeuetime:30 s:30m,a:10m,c:1m,cata:500k,t:1.6m,b:510k,r:300k,cp:500k
+troop /idlequeuetime:30 s:40m,a:15m,cata:600k,t:1.3m,b:600k,r:400k,cp:600k
+troop /idlequeuetime:30 s:60m,a:30m,cata:700k,b:700k,r:500k,cp:700k
+troop /idlequeuetime:30 s:80m,a:60m,cata:800k,b:800k,r:600k,cp:800k
+troop /idlequeuetime:30 s:100m,a:100m,cata:900k,b:900k,r:700k,cp:900k
+troop /idlequeuetime:30 s:120m,a:120m,cata:1m,b:1m,r:1m,cp:1m
+troop /idlequeuetime:30 s:200m,a:200m
+
+// optional switches /increment: /queuetime: /idlequeuetime:
+//                  /usereserved: /usepopmax:
+
+
+///---------------------------------------
+///    fortification build Defend
+///---------------------------------------
+
+fortification trap:6,ab:4
+fortification trap:12,ab:8
+fortification trap:24,ab:12,at:1
+fortification trap:32,ab:16,at:4,r:1
+fortification trap:40,ab:30,at:8,tre:1
+fortification trap:60,ab:40,at:16,tre:2
+fortification trap:80,ab:60,at:24,tre:3
+fortification trap:160,ab:100,at:32,tre:4
+fortification trap:240,ab:200,at:40,tre:5
+fortification trap:500,ab:300,at:50,tre:6
+fortification ab:400,at:70,tre:7
+fortification ab:500,at:100,tre:8
+fortification ab:600,at:200,tre:10
+fortification ab:700,at:250,tre:12
+fortification ab:800,at:300,tre:16
+fortification ab:1000,at:500,tre:24
+fortification ab:7000,at:800,trap:4000
+fortification at:17328
+// lvl10 wall = 11k treb max space/5 (55k total spaces)
+
+
+//========================================
+//   END City Goals R.2M
+//========================================
+
+

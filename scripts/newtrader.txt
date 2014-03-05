@@ -1,0 +1,51 @@
+// STS v0.09a - Smart Trading Script (c) 2012-2013 NeatPortal.com
+// WARNING: This script requires NEATBOT 2735+ to run
+//
+// The script tries to gain more resources by using spread between bid and ask prices
+// 
+// Comment out if you want to disable auto start
+label autorun
+
+// MAX_TRADE = 9999999 // uncomment if you are using 2720-2734 build
+
+// ===== OPTIONAL CONFIGURATION PARAMETERS =====
+// Extra resources to reserve (in addition to city's reserved resources)
+//       food, wood, stone, iron, gold:
+extra = [  250m,   5m,    10m,   5m,  100 ]
+
+// How aggressive we want to be (lower number would increase trading gains at the cost of potentially slower trade execution)
+aggr = 2%
+
+// Only trade if we expect this much gain
+gain = 2%
+
+// ===== NOTHING TO CONFIGURE BELOW THIS LINE =====
+delay = 10
+config trade:0
+res = 0
+comm = 0.5%
+maxRes = 990B
+
+label nextres
+if !m_context.marketReady() goto nextres
+resName = ResourceIntNames[res]
+
+buyVolume = 0
+label trading
+if city.tradesArray.length > 8 execute "canceltrade " + city.tradesArray[0].id
+if city.tradesArray.length > 8 goto trading
+resGold = city.reservedResource.gold + extra[4] + max(0, city.resource.gold - city.reservedResource.gold - extra[4]) * 0.8
+prices = [ Price(res, aggr), Price(res, 1 - aggr), Price(res, aggr) * (1 + comm), Price(res, 1 - aggr) * comm ]
+canSell = (city.resource[resName].amount - city.reservedResource[resName] - extra[res]) * 0.8
+if canSell > 0 if (prices[1] + prices[3]) / prices[2] < (1 + gain) goto trynext
+sellLimit = (city.resource.gold - resGold) / prices[3]
+if sellLimit < 1 sellLimit = min(1, (city.resource.gold - 1) / prices[3]) // we are low on gold
+sellVolume = floor(min(canSell, sellLimit, 1.1 * MAX_TRADE - buyVolume / 10))
+if sellVolume > 0 execute "sell " + res + " " + min(sellVolume, MAX_TRADE) + " " + prices[1]
+buyVolume = max(0, floor(min(maxRes - city.resource[resName].amount, (city.resource.gold - resGold) / prices[2])))
+if buyVolume > 0 execute "buy " + res + " " + min(buyVolume, MAX_TRADE) + " " + prices[0]
+if city.tradesArray.length < 8 if buyVolume + max(0, sellVolume) > 0 goto trading
+execute "sleep " + delay
+label trynext
+res = (res + 1) MOD 4
+goto nextres

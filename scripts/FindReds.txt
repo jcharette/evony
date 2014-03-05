@@ -1,0 +1,63 @@
+// start and end coords to search for reds
+TOP_COORDS = "600,400"
+BOTTOM_COORDS = "799,599"
+//TOP_COORDS = "123,535"
+//BOTTOM_COORDS = "126,540"
+
+FLAT_DISTANCE = 3
+
+/////////////
+//  MAIN
+/////////////
+
+TopCoordArray = TOP_COORDS.split(",")
+BottomCoordArray = BOTTOM_COORDS.split(",")
+j=0
+
+// find castles, ignoring NPCs, zero based array
+CastleList = CastlesInRectangle( TopCoordArray[0], TopCoordArray[1], BottomCoordArray[0], BottomCoordArray[1], true, false )
+
+echo "Found " + CastleList.length + " cities within region"
+
+label ShowReds
+if j==CastleList.length goto End
+castle = CastleList[j]
+ifgosub castle ShowCastle 
+j = j+1
+goto ShowReds
+
+label ShowCastle
+id = castle.id
+x = GetX(id)
+y = GetY(id)
+label notyet
+detail = GetDetailInfo( id, true )
+ifgoto detail == null notyet
+echo "- #" + j + " (" + x + "," + y + ") -- lord=" + detail.userName "alliance=" + detail.allianceName
+ifgoto detail.relation!=3 ShowReturn
+echo "-- FOUND RED --"
+gosub SearchFlatsAroundCastle 
+label ShowReturn
+return
+
+label SearchFlatsAroundCastle
+i = 1
+echo "-- Searching for open flats --"
+label SearchFlats
+Flats = FindField( GetX(id), GetY(id), i, 10 )
+j = 0
+if Flats.length>0 goto ShowFlats
+if i>MAX_DISTANCE goto SearchForFlatsEnd
+i = i+1
+goto SearchFlats
+
+label ShowFlats
+execute "print Distance: " + i + " Flat found at (" + GetX(Flats[j]) + "," + GetY(Flats[j]) + ")"
+j = j+1
+if j<Flats.length goto ShowFlats
+
+label SearchForFlatsEnd
+return
+
+
+label End

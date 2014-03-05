@@ -1,0 +1,59 @@
+set hitcity 562,444
+set sbhero any:level<50
+//set spamhero avery,alva,donahue
+set attackheroes malcolm,carr,edmund,primo
+set mechheroes cherry,james
+
+set spamtroops s:500,c:500
+
+set spam 1
+set landingtime
+//set landingtime @:00:49:33
+
+scout %hitcity% icu,m1,taxman s:100k %landingtime%
+
+// ram killers
+// attack %hitcity% %attackheroes% a:55k,b:20k,cp:20k,wo:500,w:500,p:500,sw:500,s:500,c:500,cata:500
+//bigattack %hitcity% %attackheroes% b:25k,cp:25k,a:70k,wo:500,w:500,p:500,sw:500,s:500,c:500,cata:500
+//attack %hitcity% %attackheroes% s:59k,b:20k,cp:20k,wo:100,w:100,s:100,p:100,sw:100,a:100,c:100,cata:100
+
+//attack %hitcity% %attackheroes% w:111,s:111,p:111,sw:111,cata:111,c:111,a:99k
+
+//attack %hitcity% %attackheroes% c:99k,s:1k
+//attack %hitcity% %attackheroes% a:99k,c:1k %landingtime%
+//attack %hitcity% %attackheroes% w:111,p:111,sw:111,a:99k,c:111,cata:111
+//attack %hitcity% %attackheroes% wo:400,w:400,p:200,sw:300,a:97700,c:500,cata:500 %landingtime%
+//attack %hitcity% %attackheroes% sw:18k,a:72k,w:1k,s:1k,p:1k,c:1k,cata:1k,wo:1k
+//attack %hitcity% %attackheroes% s:71k,b:10k,cp:10k,wo:1k,w:1k,p:1k,sw:1k,a:1k,c:1k,cata:1k
+//attack %hitcity% %attackheroes% b:10k,cp:10k,r:10k,a:10k,w:500,p:500,sw:500,c:500,cata:500,wo:500,s:57k
+//attack %hitcity% %attackheroes% wo:1111,w:1111,s:1111,p:1111,sw:1111,c:1111,cata:1111,a:33333 %landingtime%
+//attack %hitcity% %attackheroes% s:100,a:100,c:99600,b:100,cp:100
+
+//attack %hitcity% %sbhero% s:100k %landingtime%
+//attack %hitcity% %attackheroes% t:90k,a:9500,s:100,p:100,sw:100,c:100,cata:100
+//repeat 4
+
+//attack %hitcity% %attackheroes% t:100k
+//attack %hitcity% %attackheroes% cata:80k,s:10k,c:10k %landingtime%
+
+//attack %hitcity% %attackheroes% p:99k,a:1k
+
+// cav/phract cleaner
+// attack %hitcity% %sbhero% c:4k,s:2k
+
+//attack %hitcity% %attackheroes% wo:500,w:500,p:500,sw:500,a:31500,t:500,c:500,cata:500,b:40k,r:5k,cp:20k
+//bigattack %hitcity% %attackheroes% w:500,p:500,sw:500,a:1000,c:1000,cata:1000,t:500,b:75k,r:5k,cp:40k
+//attack %hitcity% %attackheroes% b:50k,cp:50k
+
+
+if %spam% == 0 goto end
+
+label cap
+//attack %hitcity% %sbhero% c:80k,cata:10k,s:10k
+//attack %hitcity% %sbhero% s:100k %landingtime%
+attack %hitcity% %sbhero% %spamtroops%
+//attack %hitcity% any,!icu c:500,s:500 %landingtime%
+goto cap
+//recall %hitcity%
+
+label end

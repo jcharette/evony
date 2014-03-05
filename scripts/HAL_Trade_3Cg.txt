@@ -1,0 +1,129 @@
+// HAL_Trade  
+// Rev# 3.C.g
+// edit Buy & Sell Prices below:
+// This script requires NEAT 2720+ 
+//
+
+label autorun
+sleep 5
+config trade:0
+set 10xbatch 99999999
+set 2xbatch 20m
+set batch 10m
+set halfbatch 5m
+set quarterbatch 2.5m
+set tenthbatch 1m
+
+// Buy Prices
+set buyfoodprice 4.65
+set buywoodprice 19.875
+set buystoneprice 1.1
+set buyironprice 20.875
+
+// Sell Prices
+set sellfoodprice 9.625
+set sellwoodprice 27.125
+set sellstoneprice 9.125
+set sellironprice 38.625
+
+// Reserve Amounts "stop selling @"
+set goldmin 30m 
+set foodmin 300m 
+set woodmin 6m 
+set ironmin 4m 
+set stonemin 25m 
+    
+// Emergency! Amounts to trigger "buy @ current price"
+set foodEmergency 100m 
+set woodEmergency 1m 
+set stoneEmergency 2m 
+set ironEmergency 1m 
+
+label NotReady
+sleep 5
+if !m_context.marketReady() goto NotReady
+
+label Purchases
+
+    if ( !m_context.marketReady() ) goto notready
+    if ( city.tradesArray.length = city.getBuildingLevel(23) ) execute "canceltrade " + city.tradesArray[0].id
+    if ( city.tradesArray.length = city.getBuildingLevel(23) ) goto purchases
+    if ( city.resource.gold < %goldmin% ) goto sales
+
+    if ( SellPrice(0) < %buyfoodprice% ) buy food %10xbatch%
+    if ( SellPrice(1) < %buywoodprice% ) buy wood %halfbatch%
+    if ( SellPrice(2) < %buystoneprice% ) buy stone %10xbatch%
+    if ( SellPrice(3) < %buyironprice% ) buy iron %halfbatch%
+
+label sales
+ label sellfood
+  if ( city.resource.food.amount < %foodmin% ) goto sellwood
+    if ( BuyPrice(0) > %sellfoodprice% ) sell food %10xbatch%
+ label sellwood
+  if ( city.resource.wood.amount < %woodmin% ) goto sellstone
+    if ( BuyPrice(1) > %sellwoodprice% ) sell wood %quarterbatch%
+label sellstone
+  if ( city.resource.stone.amount < %stonemin% ) goto selliron
+    if ( BuyPrice(2) > %sellstoneprice% ) sell stone %2xbatch%
+label selliron
+  if ( city.resource.iron.amount < %ironmin% ) goto NeededResources
+    if ( BuyPrice(3) > %sellironprice% ) sell iron %quarterbatch%
+
+Label NeededResources
+// Emergency! "buy @ current price"  will trigger a buy 5x in 30min 
+    if ( city.resource.food.amount > ( 0.75 * %foodmin% )) goto NeedWood
+      if ( SellPrice(0) < ( 1.15 * %buyfoodprice% )) buy food %2xbatch%
+      echo "75% foodmin =" 0.75 * %foodmin% 
+      echo " 115% buyfoodprice =" 1.15 * %buyfoodprice% 
+      if ( city.resource.food.amount < %foodEmergency% ) buy food %batch%
+ label NeedWood
+      if ( city.resource.wood.amount > ( 0.75 * %woodmin% )) goto NeedStone
+      if ( SellPrice(1) < ( 1.15 * %buyfoodprice% )) buy wood %tenthbatch%
+      echo "75% woodmin =" 0.75 * %woodmin% 
+      echo " 115% buywoodprice =" 1.15 * %buywoodprice% 
+      if ( city.resource.wood.amount < %woodEmergency% ) if (city.resource.wood.increaseRate <200k ) buy wood 250k
+ label NeedStone
+      if ( city.resource.stone.amount > ( 0.75 * %stonemin% )) goto NeedIron
+      if ( SellPrice(2) < ( 1.15 * %buystoneprice% )) buy stone %quarterbatch%
+      echo "75% stonemin =" 0.75 * %stonemin% 
+      echo " 115% buystoneprice =" 1.15 * %buystoneprice%   
+      if ( city.resource.stone.amount < %stoneEmergency% ) if (city.resource.stone.increaseRate <20k ) buy stone 500k
+ label NeedIron
+      if ( city.resource.iron.amount > ( 0.75 * %ironmin% )) goto NeedGoldMin
+      if ( SellPrice(3) < ( 1.15 * %buyironprice% )) buy iron %tenthbatch%
+      echo "75% ironmin =" 0.75 * %ironmin% 
+      echo " 115% buyironprice =" 1.15 * %buyironprice% 
+      if ( city.resource.iron.amount < %ironEmergency% ) if (city.resource.iron.increaseRate <200k ) buy iron 250k
+
+label NeedGoldMin
+  if ( city.resource.gold > %goldmin% ) goto Hibernate
+  echo "Selling resources for goldmin"
+
+ label SellWoodforGold
+  if ( city.resource.wood.amount < %woodmin% ) goto SellStoneforGold
+    echo "80% sell wood price =" 0.8 * %sellwoodprice%
+    if ( BuyPrice(1) > ( 0.8 * %sellwoodprice% )) sell wood %tenthbatch%
+ label SellStoneforGold
+  if ( city.resource.stone.amount < %stonemin% ) goto SellIronforGold
+    echo "80% stone sell price =" 0.8 * %sellstoneprice%
+    if ( BuyPrice(2) > ( 0.8 * %sellstoneprice% )) sell stone %halfbatch%
+ label SellIronforGold  
+  if ( city.resource.iron.amount < %ironmin% ) goto StillNeedGold
+    echo "80% iron sell price =" 0.8 * %sellironprice%
+    if ( BuyPrice(3) > ( 0.8 * %sellironprice% )) sell iron %tenthbatch%
+
+ label StillNeedGold
+  sleep 5
+  if ( city.resource.gold > %goldmin% ) goto Hibernate
+   echo "Still need Gold!"
+   if ( city.resource.wood.amount > %woodEmergency% ) if (city.resource.wood.increaseRate >200k ) sell wood 250k
+   if ( city.resource.iron.amount > %ironEmergency% ) if (city.resource.iron.increaseRate >200k ) sell iron 250k
+  
+
+label Hibernate
+sleep rnd:300:600  
+// frequency of market checks 
+
+goto Purchases
+//**  end   **//
+

@@ -1,0 +1,157 @@
+// TECH's super duper knight script :)
+// set alliance to apply to, name of an officer
+// and flag. paste and run from line 1
+
+set alliance 8
+set flag 8
+set officer 88
+
+// nothing to edit below here //
+1: useitem Newbies_Package
+2: completequests routine
+3: useitem aries_amulet
+4: completequests routine
+5: create house 22
+6: upgrade house
+7: create farm 1001
+8: create saw 1004
+9: create quarry 1003
+10: create iron 1002
+11: create inn 8
+12: sleep 5
+13: completequests routine
+14: repeat 4
+15: create feasting 11
+16: completequests routine
+17: production 100 100 100 100
+18: completequests routine
+19: sleep 5
+20: settaxrate 20
+21: completequests routine
+22: sleep 5
+23: execute "renamecity "+ m_context.Player.playerInfo.userName
+24: echo "Your city is now named "+ m_context.Player.playerInfo.userName
+25: completequests routine
+26: sleep 5
+27: changeflag %flag%
+28: echo "Your flag is now set to %flag%"
+29: completequests routine
+30: sleep 5
+31: findhero pol
+32: completequests routine
+33: setmayor pol
+34: sleep 5
+35: completequests routine
+36: rewardheroes
+37: sleep 5
+38: execute "renamehero " + city.heroes[0].name + " " + m_context.Player.playerInfo.userName
+39: echo "Your Hero's name is now: "+city.heroes[0].name
+40: sleep 5
+41: echo "You should use one 15 Minute speed up here and let the rest finish normally!"
+42: upgrade town
+43: completequests routine
+44: repeat 2
+45: create embassy 1
+/// embassy is at level 1, apply to alliance and ask for res.
+46: message = m_context.Player.playerInfo.userName +" would like to join %alliance%"
+47: execute "whisper %officer% " + message
+48: command "apply %alliance%"
+49: message = "please: transport "+city.coords+" s:100k f:200k,w:200k,i:200k,s:200k,g:200k"
+50: execute "whisper %officer% " + message
+51: sleep 5
+52: completequests routine
+53: execute "mail %officer% " + message
+54: sleep 5
+55: completequests routine
+
+56: upgrade saw
+57: completequests routine
+58: create house 21
+59: create house 20
+60: upgrade house
+61: repeat 3
+62: sleep 5
+63: completequests routine
+64: create rally 7
+65: sleep 5
+66: completequests routine
+67: sleep 5
+68: create barrack 10
+69: sleep 5
+70: completequests routine
+71: upgrade farm
+72: upgrade quarry
+73: upgrade iron
+74: upgrade iron
+75: sleep 5
+76: completequests routine
+77: create forge 9
+78: sleep 5
+79: completequests routine
+80: upgrade forge
+81: print Sometimes a hero is not very good so it takes close to 15 minutes to build this! If it does take upwards of 15 minutes then use a speed up on this!
+82: create workshop 12
+83: sleep 5
+84: completequests routine
+85: worldchat quest
+86: sleep 5
+87: completequests routine
+88: levy stone
+89: sleep 5
+90: completequests routine
+91: comfort pray
+92: sleep 5
+93: completequests routine
+94: print Sometimes a hero is not very good so it takes close to 15 minutes to build this! If it does take upwards of 15 minutes then use a speed up on this!
+95: create academy 0
+96: sleep 900
+97: completequests routine
+98: goal research ag:2,lu:2,ms:2
+99: print You should use one 15 minute speed up and let the rest finish normally!
+100: create wall
+101: sleep 30
+102: completequests routine
+103: levy wood
+104: sleep 5
+105: completequests routine
+106: comfort pray
+107: create market 6
+108: sleep 5
+109: completequests routine
+110: sell food 1
+111: sleep 5
+112: completequests routine
+113: buy stone 1
+114: sleep 5
+115: completequests routine
+116: create beacon 3
+117: sleep 5
+118: completequests routine
+119: upgrade farm
+120: upgrade saw
+121: upgrade quarry
+122: upgrade academy
+123: sleep 5
+124: goal research ag:5,lu:5,mi:5,mas:5,ms:5,in:5,st:5,ho:5,ar:5,ir:5,lo:5,com:5,mt:5
+125: completequests routine
+126: upgrade barrack
+127: completequests routine
+128: upgrade barrack
+129: completequests routine
+130: upgrade beacon
+131: completequests routine
+label waitres1
+132: sleep 900
+133: levy lumber
+134: comfort pray
+135: if city.resource.wood.amount < 12000 goto waitres1
+136: print Use a 1hr speedup if you want
+137: print Check the Town Hall time! If it takes longer than or within 10 minutes of being an hour then use a 1 hour speed up! Otherwise use one 15 minute speed up and wait!
+138: upgrade town
+139: sleep 5
+140: useitem Package_for_Lords
+141: sleep 5
+142: completequests routine
+143: useitem junior medal box
+144: completequests routine
+145: repeat 3

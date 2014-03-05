@@ -1,0 +1,80 @@
+
+//==========================================================
+// Demolition Script
+// Cap'd Level 10 NPC
+//==========================================================
+
+//==========================================================
+// set whick type of city you would like food,wood,iron,mix
+// mix is 3 to 1 ratio of wood and iron
+//==========================================================
+
+set CityType wood
+
+//==========================================================
+// If all research is done then set Racks to MaxRacks
+// If need buildings for research set Racks to MinRacks
+//==========================================================
+
+set Racks MaxRacks
+
+//==========================================================
+// Demo 13 Cottages level ten and build racks
+//==========================================================
+demo cottage level10
+repeat 13
+demo cottage
+repeat 117
+create barrack 
+repeat 13
+upgrade barrack
+repeat 117
+gosub %CityType%
+
+goto %Racks%
+
+label MaxRacks
+//==========================================================
+// Demo all other un-needed buildings and replace with Racks
+//==========================================================
+demo ws level10
+demo ws
+repeat 9
+demo fo level10
+demo fo
+repeat 9
+demo st level10
+demo st
+repeat 9
+demo inn level10
+demo inn
+repeat 9
+create barrack
+repeat 4
+upgrade barrack
+repeat 36
+goto end
+
+
+
+//==========================================================
+// Wood City
+//==========================================================
+Label Wood
+demo q level10
+demo q 
+repeat 9
+demo i level10
+demo i
+repeat 9
+demo f level10
+repeat 37
+demo f
+repeat 333
+create l
+repeat 39
+upgrade l
+repeat 312
+gosubreturn 
+
+
