@@ -1,0 +1,58 @@
+//Quick and Dirty City Builder
+MainAccount = "JustJC"
+
+config troop:0
+config reservedbarrack:1
+
+label MakeTroops
+if city.troop.peasants<500 execute "train wo:1 atk idle"
+if city.troop.scouter<10 execute "train s:1 atk idle"
+if city.troop.peasants<500 goto MakeTroops
+if city.troop.scouter<10 goto MakeTroops
+
+config troop:1
+
+config wartown:1
+config nomayor:0
+if city.fields.length>8 execute "abandon " + (city.fields[0].id MOD 80) + "," + (city.fields[0].id/800)
+config valley:0
+safevalleyfarm 0
+
+i=0
+label Starter
+i=i+1
+Flats = FindField(city.x, city.y, i, 10)
+if i>25 goto CleanUp
+if Flats.length<=0 goto Starter
+
+label Middle1
+j=-1
+label Middle2
+j=j+1
+Temp = GetDetailInfo(Flats[j],true)
+execute "print " + GetX(Flats[j]) + "," + GetY(Flats[j]) + " " + Temp.userName + " " + Temp.relation
+if Temp.relation==3 goto BuildThisCity
+if Temp.relation==2 echo "Friendly Flat"
+if Temp.relation==6 echo "Barb's Flat"
+if j+1>=Flats.length goto Starter
+goto Middle2
+
+label BuildThisCity
+config buildnpc:0
+Temp1 = city.getTravelTime(city.fieldId, Flats[j], GetTroops("s:1"), 5)
+echo Temp1
+execute "attack " + GetX(Flats[j]) + "," + GetY(Flats[j]) + " any:level<200 s:1"
+execute "sleep " + round(Temp1+5)
+execute "recall " + GetX(Flats[j]) + "," + GetY(Flats[j])
+execute "buildcity " + GetX(Flats[j]) + "," + GetY(Flats[j])
+execute "whisper " + MainAccount + "I am building a city at " + GetX(Flats[j]) + "," + GetY(Flats[j])
+goto MakeTroops
+
+label BuildThisCityFromBarbFlat
+execute "buildcity " + GetX(Flats[j]) + "," + GetY(Flats[j])
+execute "whisper " + MainAccount + "I am building a city at " + GetX(Flats[j]) + "," + GetY(Flats[j])
+goto MakeTroops
+
+label CleanUp
+config wartown:0
+config nomayor:0

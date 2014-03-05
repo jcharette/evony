@@ -1,0 +1,156 @@
+label autorun
+// We will keep buying until this limit is reached
+// if under that amount we will try to sell resources
+
+
+// for hero power leveling while trading
+set npc1 615,166
+set npc2 614,167
+set npc3 615,168
+set hero mixer
+set mayor jays
+set next_town 611,170
+
+set gold_limit 10000000000
+set agression 3
+
+// set buy price labels
+set buy_food_at 2
+set buy_wood_at 19.61
+set buy_stone_at 6.51
+set buy_iron_at 21.91
+
+// set buy amounts for resources
+set buy_amount_food 9999999
+set buy_amount_wood 9999999
+set buy_amount_stone 9999999
+set buy_amount_iron 9999999
+
+// set sell price labels
+set sell_food_at 10
+set sell_wood_at 21.11
+set sell_stone_at 16.89
+set sell_iron_at 23.61
+
+// set sell amounts for resources
+set sell_amount_food 9999999
+set sell_amount_wood 9999999
+set sell_amount_stone 9999999
+set sell_amount_iron 9999999
+
+// set lower limits of resources to be sold to
+set food_do_not_sell_under 200222111000
+set wood_do_not_sell_under 22000111000
+set stone_do_not_sell_under 41000111000
+set iron_do_not_sell_under 22000111000
+
+
+1: ifgoto ( m_city.cityManager.resource.gold < %gold_limit% ) sell_prices
+label start_prices
+2: ifgoto ( m_city.IsHeroInCastle(%hero%) == true ) train_hero
+label done_training
+label food_buy
+3: ifgoto ( m_context.buyPrice(0) < %buy_food_at% ) buy_food
+label wood_buy
+4: ifgoto ( m_context.buyPrice(1) < %buy_wood_at% ) buy_wood
+label stone_buy
+5: ifgoto ( m_context.buyPrice(2) < %buy_stone_at% ) buy_stone
+label iron_buy
+6: ifgoto ( m_context.buyPrice(3) < %buy_iron_at% ) buy_iron
+
+label sell_prices
+label food_sell
+7: ifgoto ( m_context.sellPrice(0) > %sell_food_at% ) check_food_sell
+label wood_sell
+7: ifgoto ( m_context.sellPrice(1) > %sell_wood_at% ) check_wood_sell
+label stone_sell
+8: ifgoto ( m_context.sellPrice(2) > %sell_stone_at% ) check_stone_sell
+label iron_sell
+9: ifgoto ( m_context.sellPrice(3) > %sell_iron_at% ) check_iron_sell
+10: sleep rnd:30:90
+11: goto start_prices
+
+// selling resource check section
+
+label check_food_sell
+12: ifgoto ( m_city.cityManager.resource.food < %food_do_not_sell_under% ) check_wood_sell
+13: goto sell_food
+
+label check_wood_sell
+12: ifgoto ( m_city.cityManager.resource.wood < %wood_do_not_sell_under% ) check_stone_sell
+13: goto sell_wood
+
+label check_stone_sell
+14: ifgoto ( m_city.cityManager.resource.stone < %stone_do_not_sell_under% ) check_iron_sell
+15: goto sell_stone
+
+label check_iron_sell
+16: ifgoto ( m_city.cityManager.resource.iron < %iron_do_not_sell_under% ) start_prices
+17: goto sell_iron
+
+// check gold/buy resources
+
+label buy_food
+18: ifgoto ( m_city.cityManager.resource.gold < %gold_limit% ) sell_prices
+19: buy food %buy_amount_food% %buy_food_at%
+20: repeat %agression%
+21: goto wood_buy
+
+label buy_wood
+22: ifgoto ( m_city.cityManager.resource.gold < %gold_limit% ) sell_prices
+23: buy lumber %buy_amount_wood% %buy_wood_at%
+24: repeat %agression%
+25: goto stone_buy
+
+label buy_stone
+26: ifgoto ( m_city.cityManager.resource.gold < %gold_limit% ) sell_prices
+27: buy stone %buy_amount_stone% %buy_stone_at%
+28: repeat 5
+29: goto iron_buy
+
+label buy_iron
+30: ifgoto ( m_city.cityManager.resource.gold < %gold_limit% ) sell_prices
+31: buy iron %buy_amount_iron% %buy_iron_at%
+32: repeat %agression%
+33: goto sell_prices
+
+// sell resources
+label sell_food
+34: sell food %sell_amount_food% %sell_food_at%
+35: repeat %agression%
+36: goto wood_sell
+
+label sell_wood
+34: sell wood %sell_amount_wood% %sell_wood_at%
+35: repeat %agression%
+36: goto stone_sell
+
+label sell_stone
+37: sell stone %sell_amount_stone% %sell_stone_at%
+38: repeat %agression%
+39: goto iron_sell
+
+label sell_iron
+40: sell iron %sell_amount_iron% %sell_iron_at%
+41: repeat %agression%
+42: goto start_prices
+
+label train_hero
+43: setMayorbyname %hero%
+44: setfocus 1
+45: sleep 60
+46: setfocus
+47: setMayorbyname %mayor%
+48: attack %npc1% %hero% s:5000,a:95000
+49: scout %npc1% none s:1
+50: setguard %npc1% wo:1,s:1,p:1,sw:1,a:1,c:1,cata:1,t:1,b:1,r:1,cp:1 ab:6000
+51: attack %npc2% %hero% s:5000,a:95000
+52: scout %npc2% none s:1
+53: setguard %npc2% wo:1,s:1,p:1,sw:1,a:1,c:1,cata:1,t:1,b:1,r:1,cp:1 ab:6000
+54: attack %npc3% %hero% s:5000,a:95000
+55: scout %npc3% none s:1
+56: setguard %npc3% wo:1,s:1,p:1,sw:1,a:1,c:1,cata:1,t:1,b:1,r:1,cp:1 ab:6000
+57: reinforce %next_town% %hero% s:1
+58: sleep 45
+59: attack 613,169 !mixer,!jays,any t:100k
+60: goto done_training

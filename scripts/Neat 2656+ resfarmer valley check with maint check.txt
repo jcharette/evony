@@ -1,0 +1,118 @@
+label autorun
+// Farmer town
+1: x = 123
+2: y = 456
+
+// list the heros to be used and not used
+set vheros !hero1,!hero2,any
+set space 20
+
+// # of attacks sent to the valley
+set waves 1
+set maintsleep 1200
+
+// Name towns 1-3
+3: farming_order = 2
+
+// Give the lowest level of valley you want to farm
+4: min_valley_level = 2
+
+
+
+// non user entry below
+label recheck
+5: id = ( y * 800 ) + x
+6: level = GetLevel(id)
+7: echo "Location (" + x + "," + y + ") is level " + level
+8: ifgoto ( level < min_valley_level ) exit
+9: ifgoto ( level < 10 ) 9farm
+
+label farm
+set troops a:30k,cata:1,p:1,sw:1,c:1,w:1,wo:1,b:500,r:5k,s:1
+10: ifgoto ( farming_order == 1 ) set1
+11: ifgoto ( farming_order == 2 ) set2
+12: ifgoto ( farming_order == 3 ) set3
+13: ifgoto ( farming_order >= 4 ) set4
+label set1
+14: delay = 0
+15: execute "print town "+ farming_order + " has a delay of " + delay + " min"
+16: goto start
+label set2
+17: delay = 5
+18: execute "print town "+ farming_order + " has a delay of " + delay + " min"
+19: goto start
+label set3
+20: delay = 10
+21: execute "print town "+ farming_order + " has a delay of " + delay + " min"
+22: goto start
+label set4
+23: print Hitting level 10 valleys can only support 3 towns
+24: end
+
+
+label start
+25: ifgoto ( m_city.cityManager.NumberOfRealAttacks > 0 ) farm_pause
+26: ifgoto( m_context.serverMinutes == (00+delay) ) send
+27: ifgoto( m_context.serverMinutes == (15+delay) ) send
+28: ifgoto( m_context.serverMinutes == (30+delay) ) send
+29: ifgoto( m_context.serverMinutes == (45+delay) ) send
+30: sleep 45
+31: ifgoto (  m_context.maintenanceStart >= 1 ) holding
+32: loop start
+
+label send
+33: execute "attack " + x + "," + y + " %vheros% %troops%"
+34: sleep %space%
+35: loop send %waves%
+36: loop start
+
+label 9farm
+set troops a:30k,cata:1,p:1,sw:1,c:1,w:1,wo:1,b:500,r:5k,s:1
+37: ifgoto ( farming_order == 1 ) set1
+38: ifgoto ( farming_order == 2 ) set2
+39: ifgoto ( farming_order >= 3 ) set3
+label set1
+40: delay = 0
+41: execute "print town "+ farming_order + " has a delay of " + delay + " min"
+42: goto start
+label set2
+43: delay = 3
+44: execute "print town "+ farming_order + " has a delay of " + delay + " min"
+45: goto start
+label set3
+46: print Hitting valleys below level 10's can only support 2 towns
+47: print exiting script for this town
+48: end
+
+label start
+49: ifgoto( m_context.serverMinutes == (00+delay) ) send
+50: ifgoto( m_context.serverMinutes == (06+delay) ) send
+51: ifgoto( m_context.serverMinutes == (12+delay) ) send
+52: ifgoto( m_context.serverMinutes == (18+delay) ) send
+53: ifgoto( m_context.serverMinutes == (24+delay) ) send
+54: ifgoto( m_context.serverMinutes == (30+delay) ) send
+55: ifgoto( m_context.serverMinutes == (36+delay) ) send
+56: ifgoto( m_context.serverMinutes == (42+delay) ) send
+57: ifgoto( m_context.serverMinutes == (48+delay) ) send
+58: ifgoto( m_context.serverMinutes == (54+delay) ) send
+59: sleep 45
+60: ifgoto (  m_context.maintenanceStart >= 1 ) holding
+61: loop start
+
+label holding
+62: recall %valley%
+63: sleep %maintsleep%
+64: loop recheck
+
+label farm_pause
+65: print YOU ARE UNDER ATTACK!!!
+66: print Recalling troops and sleeping for 45 min
+67: execute "recall " + x +"," + y
+68: sleep 2700
+69: print times up! Starting over...
+70: goto recheck
+
+label exit
+71: print valley level below entered number
+72: print exiting script
+73: end

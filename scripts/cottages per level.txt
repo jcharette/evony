@@ -1,0 +1,10 @@
+Hero =< att 222, archer in +40 sec: 6 cottages, no need for population comfort
+Hero = att 223-543, archer in 8-39 sec: 6 cottages
+Hero = att 544-570, archer in 7 sec: 7 cottages, = 209k archers/day/town
+Hero = att 571-601, archer in 6 sec: 8 cottages, = 230k archers/day/town
+Hero = att 602-637, archer in 5 sec: 9 cottages, = 259k archers/day/town
+Hero = att 638-681, archer in 4 sec: 10 cottages, = 302k archers/day/town
+Hero = att 682-739, archer in 3 sec: 12 cottages, = 345k archers/day/town
+Hero = att 740-820, archer in 2 sec: 14 cottages, = 432k archers/day/town
+Hero = att 821-958, archer in 1 sec: 18 cottages, = 518k archers/day/town
+Hero => att 958, instant archer: 23 cottages, = 759k archers/day/town

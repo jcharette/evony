@@ -1,0 +1,67 @@
+--------------------------------------------------------------------------
+//spam city
+//this is spam city with atleast 1 slot open...and atleast 1-2miles away...
+label SPAMMER
+abandon xxx,yyy 
+attack xxx,yyy !att1,!poli,any s:1
+sleep 5
+ifgoto ( m_context.maintenanceStart != 0 ) HOLDIT
+loop SPAMMER
+
+
+label HOLDIT
+attack xxx,yyy !att1,!poli,any s:1
+repeat 200
+sleep 1200
+goto SPAMMER
+--------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+//city 1
+//this is attacking city with no all slots full...and 1 mile away
+label autorun
+label wood
+attack xxx,yyy !att1,!poli,any a:25k,c:1,cata:1,p:1,sw:1,w:1,wo:1,b:2k
+sleep 00:00:60
+goto wood
+
+---------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------
+//city 2
+//this is attacking city with no all slots full...and 1 mile away
+label autorun
+label wait
+sleep 540
+
+label WOOD
+ifgoto ( m_context.maintenanceStart != 0 ) HOLDIT
+attack xxx,yyy !att1,!canyon2,any a:25k,c:1,s:1,p:1,sw:1,w:1,wo:1,b:1000
+sleep 00:00:60
+goto WOOD
+
+label HOLDIT
+sleep 1800
+goto wait
+---------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------
+//city 3
+//this is attacking city with no all slots full...and 1 mile away
+label autorun
+label wait
+sleep 1080
+
+label WOOD
+ifgoto ( m_context.maintenanceStart != 0 ) HOLDIT
+attack xxx,yyy !att1,!canyon2,any a:25k,c:1,s:1,p:1,sw:1,w:1,wo:1,b:1000
+sleep 00:00:60
+goto WOOD
+
+label HOLDIT
+sleep 1800
+goto wait
+----------------------------------------------------------------------------

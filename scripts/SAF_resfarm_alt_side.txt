@@ -1,0 +1,62 @@
+// Set And Forget Valley Farmer by jay777
+//ALT SIDE
+
+label autorun
+
+// Enter the valleys coords
+x = 123
+y = 456
+
+// Enter the heroes to use/not use
+set vheros !bigdude,any
+
+// Enter the level the valley must be at *minimum* before it'll farm/cap it
+// Make sure ya set this the same on the main and alt
+// The bot will level up your valley without farming it if it's below this lvl
+min_valley_level = 9
+
+// Enter the max level you want the valley to be levelled up to at maintenance
+// The bot will level up your valley until it reaches this lvl
+// The bot will cap and hold it once it reaches this lvl
+valley = 10
+
+// Set the troops for the bot to use to cap & hold the valley at maintenance
+set captroops s:100k
+
+// DO NOT EDIT STUFF BELOW THIS LINE!
+set maintsleep 2600
+
+label recheck
+id = ( y * 800 ) + x
+level = GetLevel(id)
+if level < 1 goto recheck
+echo "Location (" + x + "," + y + ") is level " + level
+
+ifgoto ( level < min_valley_level ) level_up
+
+sleep 1
+
+label cap
+execute "abandon " + x + "," + y
+execute "attack " + x + "," + y + " %vheros% s:1"
+execute "abandon " + x + "," + y
+ifgoto (  m_context.maintenanceStart >= 1 ) check
+loop cap
+
+label check
+ifgoto ( level < valley ) farm_up
+sleep 45
+execute "attack " + x + "," + y + " %vheros% %captroops%"
+sleep %maintsleep%
+goto recheck
+
+label farm_up
+sleep 45
+execute "abandon " + x + "," + y
+sleep %maintsleep%
+goto recheck
+
+label level_up
+execute "abandon " + x + "," + y
+print waiting on the valley to be the right level
+end

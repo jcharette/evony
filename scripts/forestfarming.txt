@@ -1,0 +1,47 @@
+first of all:
+
+have 2 cities around the forest or hill (needs to be level 9 or 10, both work just as good,
+ 10's more losses but slightly more res gain)
+
+
+
+then have one city at most 1.4 miles away from the forest
+this city needs all attack heros in it (to reduce losses)
+and run this script
+
+( CHANGE XXX,YYY TO COORDS OF FOREST/HILL CHANGE TRAININGHERO TO MAIN HERO NAME AND MAYOR TO MAYORS NAME)
+
+attack XXX,YYY any,!traininghero,!mayor a:30k,b:4500,s:1,c:1,sw:1,p:1,wo:1,w:1,cata:1
+sleep 50
+releasehero prisoner
+loop
+
+then in the city that is between 1-5 miles away
+run this script.
+
+(CHANGE SPAMHERO TO THE NAME OF A HERO YOU DONT MIND LOOSING you only lose heros if some cunt steals your forest)
+change XXX,YYY to coords of forest/hill.
+this script will cap and abandon the forest/hill, it will automatically stop at maint so that you dont lose a lvl 10 to maint.
+there are several "abandon xxx,yyy" lines, this makes it slightly cpu heavy, but it is just a fail safe and it makes sure that
+ the script can be ran at a range of 1-5 miles away.
+
+
+
+
+
+1: abandon XXX,YYY
+2: attack XXX,YYY SPAMHERO,!traininghero,mayor s:1
+3: abandon XXX,YYY
+4: releasehero prisoner
+5: abandon XXX,YYY
+6: sleep 10
+7: abandon XXX,YYY
+8: ifgoto ( m_context.maintenanceStart != 0 ) HOLDIT
+9: loop SPAMMER
+label HOLDIT
+10: attack XXX,YYY any,!traininghero s:10
+11: repeat 500
+12: goto SPAMMER
+
+
+enjoy unlimited res and meds!!!

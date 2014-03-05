@@ -1,0 +1,33 @@
+//location to find flats near
+CITY_COORDS = "796,503"
+
+// max distance to search
+MAX_DISTANCE = 10
+
+/////////////////////////////////
+// no changes needed under here
+/////////////////////////////////
+
+echo "-- Looking for flats around " + CITY_COORDS + " : Max Distance of " + MAX_DISTANCE
+
+i = 1
+coordArray = CITY_COORDS.split(",")
+
+label SearchFlats
+echo "-- Searching mile " + i
+Flats = FindField( coordArray[0], coordArray[1], i, 10 )
+j = 0
+if Flats.length>0 goto ShowFlats
+if i>MAX_DISTANCE goto End
+i = i+1
+goto SearchFlats
+
+label ShowFlats
+//Temp = GetDetailInfo( Flats[j], true )
+//execute "print " + Temp.relation
+execute "print Distance: " + i + " Flat found at (" + GetX(Flats[j]) + "," + GetY(Flats[j]) + ")"
+j = j+1
+if j<Flats.length goto ShowFlats
+
+label End
+echo "Search Complete"

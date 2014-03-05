@@ -1,0 +1,125 @@
+VALLEY FARMING
+
+You need 2 cities:
+
+ 	City A (which is where you will collect res/medals) 
+	City B (which will cap and release a valley) 
+
+Ok city A needs to have full valleys, it doesn’t matter which type, but FULL valleys. Next it needs to be 1mile from the valley you want to farm. 
+(level 10 forrest give about 1mi wood average per hit. Hills give much less, about 300k avg from my exp. A level 10 lake gives about 1mil also.) 
+Ok so you get all your valleys and you have level 10 valley to farm 1mile from your city. These coords will be called XXX,YYY later on so write 
+them down.  You need to set these goals so you don’t release any valleys via the bot. 
+
+config buildnpc:0
+config valley:0
+config npc:0 
+
+you wont be farming npcs from here anymore. And you can’t have any commands that will cause you to release a valley for any reason. 
+
+
+*NOTE: Its best if you can also have another valley, of any type, within a mile also but one as close as possible and write this coord as coord CCC,RRR. 
+
+*NOTE: Also I would never let your tophero or poli hero do valley farming. Theres always the chance that an enemy could cap your valley then you
+ attack it after and possibly lose the battle. If this happens you always run the risk of losing the hero. But we all know that. I ‘try’ to 
+prevent this by making my troops I use more than the usual number sent by the default setting for valley farming. Most people are lazy and do
+ not take the time to identify the valleytroops goal. 
+
+http://evonyurl.com/z4sk0l   ? prime example
+
+Ok city B needs to be 1 mile away also, no more than 3 miles, have AT LEAST ONE open valley slot. (I’d recommend getting all the valleys you
+ need for your city type then turning off the valley command here also: config valley:0) You can farm npc 5’s from here if you want, but make
+ sure you keep at least 4 heroes idle at all times. (so you can farm 4, have 1 mayor, 4 spare and room for training hero to come in. If you want
+ to try to be greedy you can prob do 5 or even 6 farming heroes) Remember the further you are away from the valley, the more idle heroes you will need.
+ 1 mile is the best. Do this by doing the following:
+
+Label 4 heroes to farm 5’s:
+
+config npc:5
+npcheroes tophero,hero1,hero2,hero3,hero4
+
+You can also build npcs if you want from City B. 
+
+config npc:15
+
+But remember, the bot may try to take your idle heroes to go hit flats and build npcs. I believe if you label heroes not to be spam, that also
+ makes them not used for flat building so try this. 
+
+notspamheroes tophero,hero1,hero2,hero3,hero4    ? your idle heroes. 
+
+*NOTE: you should always have your top hero listed as a notspamhero as well as any other heroes you are not willing to lose. 
+
+Ok, once this is set up you are ready for the scripts. 
+
+In City A put this script. 
+
+
+
+label farm
+healtroops
+ifgosub ( $m_city.cityManager.maintenanceTime$ != -1 ) maintenance 
+label farmit
+attack 626,762 any, a:25000,w:1,wo:1,p:1,sw:1,c:1,cata:1,t:200,s:100,b:1500
+sleep 57
+loop 0 farm
+
+label maintenance
+recall 626,762
+abandon 627,761
+attack 626,762 any s:100000
+sleep 15
+attack 626,762 any s:100000
+sleep 920
+abandon 626,762
+attack 627,761 any s:100000
+sleep 30
+recall 627,761
+goto farm
+
+*Remember XXX,YYY is the coord of the level 10 valley you will be farming and CCC,RRR is the coord of the other valley close by. You will be using
+ CCC,RRR to release during maint and cap your valley you are farming. Then after maint, it will release your farming valley (XXX,YYY), recap your other
+ valley (CCC,RRR) and then get back to farming for you. 
+
+
+
+
+
+
+
+
+
+
+In City B you will need this. 
+
+abandon 626,762
+ifgosub ( $m_city.cityManager.maintenanceTime$ != -1 ) maintenance 
+attack 626,762 any,!b67,b68 s:1
+sleep 10
+abandon 626,762 
+loop 
+
+
+label maintenance
+recall 626,762
+sleep 1000
+loop
+
+Ok.. this should be all you need to get going. Now some side notes/tips. 
+
+
+I would set this city up for trading with resource limits so you can trade all this new free res you are getting for what you need. Food, iron, stone, etc. 
+
+I would also set up sendtroop/keeptroop (depending on if you are YAEB or AutoEvony) commands to send archers from other cities to City A. You wanna maintain
+ enough to run 8 teams full time. You can make up to 800mil wood a day I’ve personally seen and 500mil+ should be no problem. 
+
+Remember to keep scouts in City B or you will not be able to do this successfully. 
+
+If it’s not working go back and check the simple things before saying it doesn’t work, cuz it does. 
+
+Do both cities have troops required? 
+
+Does City A have 10 valleys?
+
+Does City B have an open valley slot? 
+
+Are your bot setting right so it doesn’t release valleys in City A? 
+

@@ -1,0 +1,96 @@
+//MarketScript Mach 3
+label autorun
+if !m_context.marketReady() goto autorun
+config trade:0
+
+Batch = [99999999,9999999,99999999,9999999]
+//Specify how much Food, Wood, Stone, Iron, Gold to keep around in reserve
+Mins = [150b, 100m, 100m, 100m, 100m]
+
+//Specify the maximum amount of Food, Wood, Stone, Iron and Gold that you will allow to
+// be stockpiled in your city (keep: food at 900b or under to prevent lossing it to the
+// system, keep all others super high)
+Maxs = [900b, 900b, 900b, 900b, 900b]
+
+
+
+Margin = 10%
+Centering = 5000
+
+
+if !m_context.marketReady() goto autorun
+
+LowestPrice = [m_context.buyPrice(0), m_context.buyPrice(1), m_context.buyPrice(2), m_context.buyPrice(3)]
+HighestPrice = [m_context.sellPrice(0), m_context.sellPrice(1), m_context.sellPrice(2), m_context.sellPrice(3)]
+AveragePrice = [(LowestPrice[0]+HighestPrice[0])/2,(LowestPrice[1]+HighestPrice[1])/2,(LowestPrice[2]+HighestPrice[2])/2,(LowestPrice[3]+HighestPrice[3])/2]
+
+Res = 0
+ResName = ["food","wood","stone","iron"]
+
+
+
+
+label Starter
+if city.tradesArray.length > 5 execute "canceltrade " + city.tradesArray[0].id
+if city.tradesArray.length > 5 repeat
+if !m_context.marketReady() goto Starter
+
+//Trading actions
+if city.tradesArray.length > 8 execute "canceltrade " + city.tradesArray[0].id
+if city.tradesArray.length > 8 repeat
+
+label ResBuy
+execute "marketupdate " + ResName[Res]
+if m_context.marketReady() if (m_city.cityManager.tradesArray.length<10) if (m_city.cityManager.resource.gold>Mins[4]) if (city.resource[ResName[Res]].amount<Maxs[Res]-Batch[Res]) if (((HighestPrice[Res]-BuyPrice(Res))/BuyPrice(Res))>Margin) if (AveragePrice[Res]-BuyPrice(Res)<=BuyPrice(Res)-LowestPrice[Res]) execute "buy " + Res + " " + min(floor(((m_city.cityManager.resource.gold-Mins[4])/BuyPrice(Res))/10),Batch[Res]) + " " + ((AveragePrice[Res]+LowestPrice(Res))/2)
+execute "marketupdate " + ResName[Res]
+if m_context.marketReady() if (m_city.cityManager.tradesArray.length<10) if (m_city.cityManager.resource.gold-(Batch[Res]*BuyPrice(Res))>Mins[4]) if (city.resource[ResName[Res]].amount+(Batch[Res]*100)<Maxs[Res]) if (((HighestPrice[Res]-BuyPrice(Res))/BuyPrice(Res))>Margin) if (AveragePrice[Res]-BuyPrice(Res)<=BuyPrice(Res)-LowestPrice[Res]) goto ResBuy
+execute "marketupdate " + ResName[Res]
+if m_context.marketReady() if (m_city.cityManager.tradesArray.length<10) if (city.resource[ResName[Res]].amount<Mins[Res]) if (m_city.cityManager.resource.gold-((Batch[Res]/10)*BuyPrice(Res))>Mins[4]) if (BuyPrice(Res)<AveragePrice[Res]) execute "buy " + Res + " " + min(floor(Batch[Res]/10),BuyAmount(Res)) + " " + BuyPrice(Res)
+
+if city.tradesArray.length > 8 execute "canceltrade " + city.tradesArray[0].id
+if city.tradesArray.length > 8 repeat
+
+label ResSell
+execute "marketupdate " + ResName[Res]
+if m_context.marketReady() if (m_city.cityManager.tradesArray.length<10) if (m_city.cityManager.resource.gold<Maxs[4]) if (city.resource[ResName[Res]].amount>Mins[Res]+Batch[Res]) if (((SellPrice(Res)-LowestPrice[Res])/SellPrice(Res))>Margin) if (SellPrice(Res)-AveragePrice[Res]>=HighestPrice[Res]-SellPrice(Res)) execute "sell " + Res + " " + floor(min(((city.resource[ResName[Res]].amount-Mins[Res])/10),Batch[Res],SellAmount(Res))) + " " + 0.001
+execute "marketupdate " + ResName[Res]
+if m_context.marketReady() if (m_city.cityManager.tradesArray.length<10) if (m_city.cityManager.resource.gold+(Batch[Res]*SellPrice(Res))<Maxs[4]) if (city.resource[ResName[Res]].amount-Batch[Res]>Mins[Res]) if (((SellPrice(Res) - LowestPrice[Res])/SellPrice(Res))>Margin) if (SellPrice(Res)-AveragePrice[Res]>=HighestPrice[Res]-SellPrice(Res)) goto ResSell
+execute "marketupdate " + ResName[Res]
+if m_context.marketReady() if (m_city.cityManager.tradesArray.length<10) if (city.resource[ResName[Res]].amount>Maxs[Res]) if (m_city.cityManager.resource.gold+((Batch[Res]/10)*SellPrice(Res))<Maxs[4]) if (SellPrice(Res)>AveragePrice[Res])  execute "sell " + Res + " " + min(floor(Batch[Res]/10),SellAmount(Res)) + " " + 0.001
+
+if city.tradesArray.length > 8 execute "canceltrade " + city.tradesArray[0].id
+if city.tradesArray.length > 8 repeat
+
+Res = (Res+1) MOD 4
+
+if Res != 0 goto Starter
+
+
+//Sets Lowest and Highest Prices to the average of the current High/Low and the market value if at a record and always move back slightly towards the center
+marketupdate food
+marketupdate wood
+marketupdate stone
+marketupdate iron
+if m_context.marketReady() LowestPrice = [((min(LowestPrice[0],(BuyPrice(0)+LowestPrice[0])/2)*Centering)+HighestPrice[0])/(Centering+1),((min(LowestPrice[1],(BuyPrice(1)+LowestPrice[1])/2)*Centering)+HighestPrice[1])/(Centering+1),((min(LowestPrice[2],(BuyPrice(2)+LowestPrice[2])/2)*Centering)+HighestPrice[2])/(Centering+1),((min(LowestPrice[3],(BuyPrice(3)+LowestPrice[3])/2)*Centering)+HighestPrice[3])/(Centering+1)]
+if m_context.marketReady() HighestPrice = [((max(HighestPrice[0],(SellPrice(0)+HighestPrice[0])/2)*Centering)-LowestPrice[0])/(Centering+1),((max(HighestPrice[1],(SellPrice(1)+HighestPrice[1])/2)*Centering)-LowestPrice[1])/(Centering+1),((max(HighestPrice[2],(SellPrice(2)+HighestPrice[2])/2)*Centering)-LowestPrice[2])/(Centering+1),((max(HighestPrice[3],(SellPrice(3)+HighestPrice[3])/2)*Centering)-LowestPrice[3])/(Centering+1)]
+if m_context.marketReady() AveragePrice = [((AveragePrice[0]*(Centering/10))+(BuyPrice(0)+SellPrice(0))/2)/((Centering/10)+1),((AveragePrice[1]*(Centering/10))+(BuyPrice(1)+SellPrice(1))/2)/((Centering/10)+1),((AveragePrice[2]*(Centering/10))+(BuyPrice(2)+SellPrice(2))/2)/((Centering/10)+1),((AveragePrice[3]*(Centering/10))+(BuyPrice(3)+SellPrice(3))/2)/((Centering/10)+1)]
+
+
+
+Debugging = 2
+
+if Debugging == 0 goto Starter
+
+
+//Debugging outputs
+if Debugging >= 1 execute "print Gold " + round((m_city.cityManager.resource.food.amount*AveragePrice[0] + m_city.cityManager.resource.wood.amount*AveragePrice[1] + m_city.cityManager.resource.stone.amount*AveragePrice[2] + m_city.cityManager.resource.iron.amount*AveragePrice[3] + m_city.cityManager.resource.gold)/1000000000,3) + " bil"
+
+label DebugPrinter
+if Debugging >= 2 execute "print " + ResName[Res] + "  low " + round(LowestPrice[Res],3) + "  high " + round(HighestPrice[Res],3) + "  ave " + round(AveragePrice[Res],3) + "  buy " + BuyPrice(Res) + "  sell " + SellPrice(Res) + "  amount " + round(city.resource[ResName[Res]].amount/1000000000,3) + " bil" + "  margin " + round((((HighestPrice[Res]-LowestPrice[Res])/HighestPrice[Res])*100),3)
+Res = (Res+1) MOD 4
+if Res != 0 goto DebugPrinter
+
+goto Starter
+
+
+

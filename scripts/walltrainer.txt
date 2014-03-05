@@ -1,0 +1,31 @@
+//Poli PowerLevel! //AB 27500, ATS 18333, ROLL 13750, TRE 11000
+label autorun
+gosub BeginLeveling
+
+label BeginHere
+ifgoto ( m_city.cityManager.heroes[0].level > 984 ) NatTreb
+ifgoto ( m_city.cityManager.resource.wood.amount > 5b ) PoliLevel
+goto EndThisNow
+
+label PoliLevel
+walldefense at 18333 demo
+cancelfortifications
+setmayorbyname dqueen
+walldefense at 18333 build
+goto BeginHere
+
+label EndThisNow
+print Getting Low On Wood!
+stop
+
+label NatTreb
+print Finally A Natural Treb!!
+stop
+
+label BeginLeveling
+walldefense tra 50000 demo
+walldefense ab 50000 demo
+walldefense at 50000 demo
+walldefense r 50000 demo
+walldefense tre 50000 demo
+gosub BeginHere

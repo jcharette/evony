@@ -1,0 +1,147 @@
+INSTANT TROOPS Attack Lvl with excal
+Warriors:         432 ATTACK    346 Att + excal
+Workers:          571 ATTACK    457 Att + excal
+Scouts:           709 ATTACK    568 Att + excal
+Pikemen:          790 ATTACK    632 Att + excal
+Swordsmen:        871 ATTCK     697 Att + excal
+Archers:          959 ATTACK    768 Att + excal
+Cavalry:          1,030 ATTACK  824 Att + excal
+Transporters:     1,168 ATTACK  935 Att + excal
+Cataphracts:      1,249 ATTACK  1000 Att + excal
+Ballistae:        1,388 ATTACK  1111 Att + excal
+Battering Rams:   1,468 ATTACK  1175 Att + excal
+Catapults:        1,526 ATTACK  1221 Att + excal
+
+
+Instant Wall Defense Hero Politics
+   Politics Pol with Wealth of Nations
+Traps...............607  486 Pol + Wealth/Nations
+Abatis..............745  596 Pol + Wealth/Nations
+Towers..............826  661 Pol + Wealth/Nations
+Logs................965  772 Pol + Wealth/Nations
+Trebuchets.........1066  853 Pol + Wealth/Nations
+
+
+Exp per build
+1 Worker: 1.125
+1 Warrior: 1.525
+1 Scout: 3.475
+1 Pikeman: 4.5
+1 Swordsman: 6.75
+1 Archer: 7
+1 Cavalry: 14.25
+1 Cataphract: 43.75
+1 Transporter: 14.875
+1 Ballista: 50
+1 Battering Ram: 68.75
+1 Catapult: 145
+
+Walls single build exp           Max build amount    Full build exp   Cost per full build
+1 Trap: 4.375 ------------------ 55,000 ------------ 240,625 -------- Food:2,750,000  Wood:27,500,000  Stone:5,500,000  Iron:2,750,000
+1 Abatis: 8.375 ---------------- 27,500 ------------ 230,312 -------- Food:2,750,000  Wood:33,000,000  Stone:0          Iron:4,125,000
+1 Archer's Tower: 27.25 -------- 18,333 ------------ 499,574 -------- Food:3,666,600  Wood:36,666,000  Stone:18,333,000 Iron:9,166,500
+1 Rollinglog: 31.5 ------------- 13,750 ------------ 433,125 -------- Food:4,125,000  Wood:82,500,000  Stone:0          Iron:0
+1 Defensive Trebuchet: 83 ------ 11,000 ------------ 913,000 -------- Food:6,600,000  Wood:0           Stone:88,000,000 Iron:0
+
+
+Lvl 1 Instant builds
+
+Cottage: 652
+Warehouse: 1066
+Workshop: 1045
+Walls: 1286 
+
+
+PRESTIGE RATIO for troop plundering
+This is the prestige ratio. If you are below it then you will lose things en-route.
+
+Transporting and prestige table
+
+0-2.99x prest = 0% losses
+3-4.99x prest = 46% losses
+5-6.99x prest = 73% losses
+7-8.99x prest = 86% losses
+9+ x prest = 93% losses
+
+
+What levels do you need to be to persuade captured heroes?
+Every 10 levels requires a new Title and more medals. While I am not sure on medal rates I can give a chart of Titles to Persuaded heroes.
+
+1 - 9 = Civilian (1 city)
+10 - 19 = Knight (2 cities)
+20 - 29 = Baronet (3 cities)
+30 - 39 = Baron  (4 cities)
+40 - 49 = Viscount (5 cities)
+50 - 59 = Earl  (6 cities)
+60 - 69 = Marquis (7 cities)
+70 - 79 = Duke  (8 cities)
+80 - 89 = Furstin (9 cities)
+90+ = Prinzessin (10 cities) 
+
+******
+Nations needed to persuade a hero
+Nation medals((level / 10) - 5)
+Hero level 851
+
+851 / 10 = 85.1
+85.1 - 5 = 80.1
+80.1 = round up to the nearest whole number (81)
+
+81 nations needed to persuade a hero at level 851
+*****
+
+
+Troops needed to cover
+
+SB’s will hit Archers unless:
+
+
+Archers : Workers     Archers : Warriors     Archers : Scouts     Archers : Pike     Archers : Sword     Archers : Cav     
+      1 : 24                1 : 2.4                1 : 6                1 : 0.8            1 : 1.2             1 : 0.48          
+                                                                    (1.25 : 1)                              (2.1 : 1)         
+
+Archers : Phracts     Archers: Trans        Archers : Ballis       Archers : Rams       Archers : Pults
+      1 : 0.34             1 : 12                 1 : 0.27               1 : 0.48             1 : 0.2
+   (2.9 : 1)                                  (3.75 : 1)              (2.1 : 1)              (5 : 1)
+  
+
+
+ 
+SB’s will hit Ballista (Ballis) unless:
+
+
+Ballis : Workers     Ballis : Warriors     Ballis : Scouts     Ballis : Pike     Ballis : Sword     Ballis : Archer
+     1 : 90               1 : 9                 1 : 22.5            1 : 3             1 : 4.5            1 : 3.75
+
+
+ 
+Ballis : Cav         Ballis : Phracts      Ballis : Trans      Ballis : Rams     Ballis : Pults
+     1 : 1.8              1 : 1.3               1 : 45              1 : 1.8           1 : 0.75
+                                                                                   (1.3 : 1)
+ 
+
+SB’s will hit Catapults (Pults) unless:
+
+
+Pults : Worker     Pults : Warrior     Pults : Scout     Pults : Pike     Pults : Sword     Pults : Archer
+    1 : 120            1 : 12              1 :30             1 : 4            1 : 6             1 : 5
+ 
+Pults : Cav        Pults : Phracts     Pults : Trans     Pults : Ballis   Pults : Rams
+    1 : 2.4            1 : 1.7             1 : 60            1 : 1.3          1 : 2.4
+ 
+
+These numbers are MINIMUM. As soon as you’re hit you will fall below these safe numbers so aim for higher.
+
+
+Eg: If you use warrior’s to protect against SB, you will need 9 warrior’s for every 1 ballista.  So for 20k ballista you will need 180,000 warriors to be safe.
+
+
+A SB can kill up to 45k warriors, so if the enemy has 1mil scouts to use as bombs, you can lose up to 450k warriors almost instantly so ALWAYS aim to have more than the minimum stated here.
+
+
+
+Troop Attack Value
+
+Worker:5     Warrior:50     Scout:20     Pike:150     Swords:100     Archer:120     
+Cav:250      Phract:350     Trans:10     Ballisa:450  Rams:250       Pult:600
+ 

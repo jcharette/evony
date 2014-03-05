@@ -1,0 +1,175 @@
+label autorun
+// Farmer town
+
+// list the valleys coords
+x = 602
+y = 153
+
+//max amount of rally slots to use up
+rally = 8
+
+//auto release hero switch
+//0 off 1 on
+release = 1
+
+// list the heros to be used and not used
+set vheros !mixer,!flipolly,!base65poll,any
+
+
+// # of attacks sent to the valley
+set waves 7
+
+
+// Name towns 1-3
+// NOTE: 10's can support 3 towns, but 9's and lower can only support 2
+farming_order = 1
+
+
+// Give the lowest level of valley you want to farm
+min_valley_level = 8
+
+
+// Set the troops you want to use
+// or use the default sets
+troops10 = 'a:30k,cata:1,p:1,sw:1,c:1,w:1,wo:1,b:500,r:5k,s:1'
+troops9 = 'a:30k,cata:1,p:1,sw:1,c:1,s:1'
+
+
+
+
+
+
+// non user entry below
+set space 20
+set maintsleep 1800
+
+
+label recheck
+id = ( y * 800 ) + x
+level = GetLevel(id)
+if level < 1 goto recheck
+if m_city.cityManager.fields.length < city.getBuildingLevel(31) goto short_valley
+echo "Location (" + x + "," + y + ") is level " + level
+ifgoto ( level < min_valley_level ) exit
+
+
+army = troops10
+set group start
+finished = 'start'
+ifgoto ( level == 10 ) begin
+army = troops9
+set group start9
+finished = 'start9'
+ifgoto ( level < 10 ) 9farm
+
+label begin
+ifgoto ( farming_order == 0 ) set0
+ifgoto ( farming_order == 1 ) set1
+ifgoto ( farming_order == 2 ) set2
+ifgoto ( farming_order == 3 ) set3
+ifgoto ( farming_order >= 4 ) set4
+label set0
+print Valid town order is between 1-3
+end
+label set1
+delay = 0
+execute "print town "+ farming_order + " has a delay of " + delay + " min"
+goto start
+label set2
+delay = 5
+execute "print town "+ farming_order + " has a delay of " + delay + " min"
+goto start
+label set3
+delay = 10
+execute "print town "+ farming_order + " has a delay of " + delay + " min"
+goto start
+label set4
+print Hitting level 9 or 10 valleys can only support a max of 3 towns
+end
+
+
+label start
+if release != 0 releasehero any
+ifgoto ( m_city.cityManager.NumberOfRealAttacks > 0 ) farm_pause
+ifgoto( m_context.serverMinutes == (00+delay) ) send
+ifgoto( m_context.serverMinutes == (15+delay) ) send
+ifgoto( m_context.serverMinutes == (30+delay) ) send
+ifgoto( m_context.serverMinutes == (45+delay) ) send
+sleep 45
+ifgoto (  m_context.maintenanceStart >= 1 ) holding
+loop start
+
+label send
+execute "attack " + x + "," + y + " %vheros% " + army
+if m_city.cityManager.selfArmies.length > rally goto full
+sleep %space%
+loop send %waves%
+label full
+execute "loop " + finished
+
+
+
+label 9farm
+ifgoto ( farming_order == 0 ) set00
+ifgoto ( farming_order == 1 ) set10
+ifgoto ( farming_order == 2 ) set20
+ifgoto ( farming_order == 3 ) set30
+ifgoto ( farming_order >= 4 ) set4
+label set00
+print Valid town order is either 1 or 2 for 9's and below
+end
+label set10
+delay = 0
+execute "print town "+ farming_order + " has a delay of " + delay + " min"
+goto start9
+label set20
+delay = 3
+execute "print town "+ farming_order + " has a delay of " + delay + " min"
+goto start9
+label set30
+print Hitting valleys below level 10's can only support 2 towns
+print exiting script for this town
+end
+
+label start9
+if release != 0 releasehero any
+ifgoto ( m_city.cityManager.NumberOfRealAttacks > 0 ) farm_pause
+ifgoto( m_context.serverMinutes == (00+delay) ) send
+ifgoto( m_context.serverMinutes == (06+delay) ) send
+ifgoto( m_context.serverMinutes == (12+delay) ) send
+ifgoto( m_context.serverMinutes == (18+delay) ) send
+ifgoto( m_context.serverMinutes == (24+delay) ) send
+ifgoto( m_context.serverMinutes == (30+delay) ) send
+ifgoto( m_context.serverMinutes == (36+delay) ) send
+ifgoto( m_context.serverMinutes == (42+delay) ) send
+ifgoto( m_context.serverMinutes == (48+delay) ) send
+ifgoto( m_context.serverMinutes == (54+delay) ) send
+sleep 45
+ifgoto (  m_context.maintenanceStart >= 1 ) holding
+loop start9
+
+label holding
+recall %valley%
+sleep %maintsleep%
+loop recheck
+
+label farm_pause
+print YOU ARE UNDER ATTACK!!!
+print Recalling troops and sleeping for 45 min
+execute "recall " + x +"," + y
+sleep 2700
+print times up! Starting over...
+goto recheck
+
+label short_valley
+echo Your town is not full on valleys.
+echo Recalling troops and pausing
+echo for 30 min.
+sleep 1800
+echo Time's up! Lets check again.
+goto recheck
+
+label exit
+print valley level below entered number
+print exiting script
+end
