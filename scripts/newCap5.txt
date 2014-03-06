@@ -11,21 +11,24 @@ usecav = true
 # nothing below here needs to be touched.
 #---
 
-//config wartown:1
+config wartown:1
 
 goto calctimes
 
 label takeit
-//echo "calc'd delay was " + delay
-
 execute "attack " + coords + " " + attackheroes + " b:550"
 execute "sleep " + delay
 
-// above example sleeps for 22 mins before sending cav spam
+if usecav == false goto warspam
 label cavspam
 execute "attack " + coords + " " + attackheroes + " c:2k,s:1k"
 sleep 60
 loop cavspam 30
+goto end
+
+label warspam
+echo "not implemented.. yet"
+goto end
 
 label calctimes
 if usecav == false goto calcwar
@@ -38,6 +41,5 @@ label calcwar
 echo "take with wars not implemented yet.."
 goto end
 goto takeit
-
 
 label end

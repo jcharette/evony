@@ -1,0 +1,15 @@
+set coords 131,698
+set attackheroes !abner,any:pol<100,base<70
+
+config wartown:1
+travelinfo %coords% b:1
+echo "now you need to adjust your sleep time below and run script from line" 5
+end
+
+attack %coords% %attackheroes% b:550
+sleep 00:13:00
+// above example sleeps for 22 mins before sending cav spam
+label cavspam
+attack %coords% %attackheroes% c:2k,s:1k
+sleep 60
+loop cavspam 30

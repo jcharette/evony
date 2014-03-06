@@ -1,0 +1,32 @@
+set coords xxx,yyy
+set attackheroes !benson,any:att<400,pol<100,base<70
+
+config wartown:1
+travelinfo %coords% b:1
+travelinfo %coords% w:1
+print now you need to adjust your sleep time below for the difference and run script from line 5
+end
+
+attack %coords% %attackheroes% b:550
+sleep 00:13:00
+// above example sleeps for 13 mins before sending spam
+label npcspam
+attack %coords% %attackheroes% a:80k,w:10k
+sleep 30
+attack %coords% %attackheroes% a:30k,w:10k
+sleep 30
+attack %coords% %attackheroes% w:30k
+sleep 30
+attack %coords% %attackheroes% w:25k
+sleep 30
+attack %coords% %attackheroes% w:20k
+sleep 30
+attack %coords% %attackheroes% w:30k
+sleep 30
+attack %coords% %attackheroes% w:25k
+sleep 30
+attack %coords% %attackheroes% w:20k
+sleep 30
+attack %coords% %attackheroes% w:20k
+sleep 30
+loop npcspam 30
