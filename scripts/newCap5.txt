@@ -1,0 +1,49 @@
+// 5 to take
+# todo, make so i can just put coords here instead of x,y (use split)
+# should set npcX,npcy dynamically
+set coords 131,698
+set npcX 131
+set npcY 168
+
+# heroes to use
+set attackheroes !abner,any:pol<100,base<70
+
+# cav or war?
+set usecav true
+
+#----
+# nothing below here needs to be touched.
+#---
+
+config wartown:1
+
+goto calctimes
+
+label takeit
+
+echo "calc'd delay was " + delay
+travelinfo %coords% b:1
+echo "now you need to adjust your sleep time below and run script from line" 5
+goto end
+
+attack %coords% %attackheroes% b:550
+sleep 00:13:00
+// above example sleeps for 22 mins before sending cav spam
+label cavspam
+attack %coords% %attackheroes% c:2k,s:1k
+sleep 60
+loop cavspam 30
+
+label calctimes
+if usecave == false goto calcwar
+ttime = city.getTravelTime( npcX, npcY, GetTroops("b:1"), 5 )
+delay = round(ttime+5)
+goto takeit
+
+label calcwar
+echo "take with wars not implemented yet.."
+goto end
+goto takeit
+
+
+label end

@@ -1,0 +1,55 @@
+// how far out to farm
+distance = 5
+
+// hero and what you want to send for troops
+thero = "iamjc"
+trainingtroops = "a:85k,s:10k"
+
+// min arch to send at
+archmin = 200000
+
+// set to true if you want lots of info, false if not
+spammy = true
+
+//  DONT CHANGE ANYTHING BELOW THIS
+
+loopcount = 0
+
+label TrainingStart
+
+label MakeTroops
+if city.troop.archer<archmin execute "sleep 00:30:00"
+if city.troop.archer<archmin goto MakeTroops
+
+// initialize npc10s to be hit
+Flats = FindField(city.x, city.y, distance, 12, 10)
+if spammy == true echo "Trainging hero on Level 10 NPCS"
+j = 0
+
+label ShowFlats
+if spammy == true echo GetX(Flats[j]) + "," + GetY(Flats[j]) + " is level " + GetLevel(Flats[j])
+j = j + 1
+if j<Flats.length goto ShowFlats
+
+j = 0
+label HitNPCs 
+if spammy == true echo "waiting for " + thero
+execute "waithero " + thero
+if Flats[j] == 0 goto NextNPC
+FlatX = GetX(Flats[j])
+if FlatX == 0 goto NextNPC
+ttime = city.getTravelTime(city.fieldId, Flats[j], GetTroops("a:1"), 5)
+ttime = round(ttime+5)
+if spammy == true echo "OneWay TravelTime = " + ttime
+if spammy == true echo "attacking " + GetX(Flats[j]) + "," + GetY(Flats[j]) 
+execute "attack " + GetX(Flats[j]) + "," + GetY(Flats[j]) + " " + thero + " " + trainingtroops
+if spammy == true echo "sleeping " + ttime + " for attack to land" 
+execute "sleep " + ttime
+if spammy == true echo "sleeping " + ttime + " for attack to return"
+execute "sleep " + ttime
+label NextNPC
+j = j+1
+if j<Flats.length goto HitNPCs
+
+sleep 02:00:00
+goto TrainingStart
