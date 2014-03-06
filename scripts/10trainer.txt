@@ -23,7 +23,7 @@ if city.troop.archer<archmin goto MakeTroops
 
 // initialize npc10s to be hit
 Flats = FindField(city.x, city.y, distance, 12, 10)
-if spammy == true echo "Trainging hero on Level 10 NPCS"
+if spammy == true echo "Training hero on Level 10 NPCS"
 j = 0
 
 label ShowFlats
