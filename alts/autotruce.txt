@@ -1,0 +1,19 @@
+label start
+
+ifgoto ( m_city.cityManager.hasEnemyArmies = true ) truceup
+sleep rnd:30:60
+goto start
+
+label truceup
+truce
+
+
+label start
+
+ifgoto ( m_city.cityManager.hasEnemyArmies = true ) truceup
+sleep rnd:30:60
+goto start
+
+label truceup
+//teleport Random
+useitem truce agreement
