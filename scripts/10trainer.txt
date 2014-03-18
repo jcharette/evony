@@ -91,7 +91,7 @@ if city.findHeroByName(curHero.name).isMarching goto HeroIsMarching
 execute "waithero " + curHero.name
 execute "attack " + FieldIdToCoords(Flats[cnt]) + " " + curHero.name + " " + CurNPC.attack
 ttime = city.getTravelTime(city.fieldId, Flats[cnt], GetTroops(CurNPC.attack), 5 )
-ttime = round( ttime +1 )
+ttime = round( ttime * 2 )
 if ttime > max_ttime max_ttime = ttime
 goto HitNextNPC
 
@@ -110,8 +110,8 @@ cnt = cnt + 1
 goto heroLoop
 
 label endHeroAttacks
-@echo "Sleeping " max_ttime * 2 + " seconds for attacks to return"
-execute "sleep " + max_ttime * 2 // wait for longest walker to return
+@echo "Sleeping " max_ttime + " seconds for attacks to return"
+execute "sleep " + max_ttime  // wait for longest walker to return
 goto HitNPCs
 
 //------
