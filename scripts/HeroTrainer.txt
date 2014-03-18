@@ -84,7 +84,6 @@ gosub CheckTroops
 if !enough_troops gosubreturn // not enough troops for this NPC level, return.
 hero_i = 0
 max_ttime = 0
-waithero = ""
 
 label heroLoop
 if cnt = Flats.length gotsubreturn // end of NPCs, return.
