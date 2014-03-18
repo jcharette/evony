@@ -4,13 +4,14 @@
 // *all* values must be present for each hero in list.
 // format { name:"hero name", maxlevel:max level NPC to hit, minlevel: min to hit }
 // example: HEROES = [ { name:"Joe", minlevel:5, maxlevel:8 }, { name:"Fred", minlevel:8, maxlevel:10 }
-HEROES = [ { name:"Broderick", minlevel:8, maxlevel:10 } ]
+HEROES = [ { name:"Broderick", minlevel:5, maxlevel:10 }, { name:"T2", minlevel:9, maxlevel:10 } ]
 
 // HITS are npcs you want to train and hit, 
 // each {} encapulates a set of NPC hits.  order matters as the first hit in the array will be hit
 // first on each cycle
 // YOU MUST FOLLOW THE FORMAT BELOW! and all on the same line for now.  no limit on length though.
 // level = npc level to hit, attack = attack to hit with, min troops = min troops to have in city, range = max range to hit npc 
+// your attack strings must start with a:, w: or c: as well.
 HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:20 }, { level:8, attack:"w:95000", min_troops:200000, range:5 } , { level:5, attack:"w:3000,b:500", min_troops:10000, range:3 } ]
 	
 // truce if someone moves in?
@@ -24,7 +25,7 @@ MAINT_PAUSE = 60  // delay for maintenance (in minutes)
 ///////////////////////////////////////////////////////
 //  DONT CHANGE ANYTHING BELOW THIS
 
-gosub CheckInnHeroes
+// gosub CheckInnHeroes
 
 label MainLoop
 @echo "-- Loop Start --"
@@ -39,10 +40,12 @@ if CurNPC.range < max_scan max_scan = curNPC.range
 // element 0 is npc level to hit
 Flats = FindField( city.x, city.y, CurNPC.range, 12, CurNPC.level).sort(city.compareByDistanceToCastle)
 @echo Flats.length + " level " + CurNPC.level + " NPCs found."
+if Flats.length = 0 goto NextNPC
 cnt = 0
 gosub CheckTroops
 if ! enough_troops @echo "Skipping " + CurNPC.level + " NPC hits due troop count"
 if enough_troops gosub HitNPCs
+label NextNPC
 i = i + 1
 goto NPCLoop
 @echo "Hit " + cnt + " " + CurNPC.level + " NPC's.  Number may have been reduced by troop counts"
@@ -89,6 +92,7 @@ curHero = HEROES[hero_i]
 if curHero.maxlevel < CurNPC.level goto HeroNotHitNPC
 if curHero.minlevel > CurNPC.level goto HeroNotHitNPC
 if FieldIdToCoords(Flats[cnt]) = "0,0" goto MainLoop  // scan borked, restart
+if !city.findHeroByName(curHero.name) goto HeroNotFound
 if city.findHeroByName(curHero.name).isMarching goto HeroIsMarching
 execute "waithero " + curHero.name
 execute "attack " + FieldIdToCoords(Flats[cnt]) + " " + curHero.name + " " + CurNPC.attack
@@ -99,6 +103,9 @@ goto HitNextNPC
 
 label HeroIsMarching
 @echo curHero.name + " is marching, not waiting for them"
+goto NextHero
+label HeroNotFound
+@echo curHero.name + " is not found in your city, assuming trainer?"
 goto NextHero
 label HeroNotHitNPC
 @echo "Skipping hits with hero " + curHero.name + " because their configuration says not to hit " + CurNPC.level + " NPCs"
