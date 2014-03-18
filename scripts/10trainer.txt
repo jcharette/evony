@@ -1,10 +1,10 @@
 
 
 // hero and what you want to send for troops
-// currently only works with 1 hero
-// format { name:"hero name", maxlevel:max level NPC to hit }
-// example: HEROES = [ { name:"Joe", maxlevel:8 }, { name:"Fred", maxlevel:10 }
-HEROES = [ { name:"Broderick", maxlevel:10 } ]
+// *all* values must be present for each hero in list.
+// format { name:"hero name", maxlevel:max level NPC to hit, minlevel: min to hit }
+// example: HEROES = [ { name:"Joe", minlevel:5, maxlevel:8 }, { name:"Fred", minlevel:8, maxlevel:10 }
+HEROES = [ { name:"Broderick", minlevel:8, maxlevel:10 } ]
 
 // HITS are npcs you want to train and hit, 
 // each {} encapulates a set of NPC hits.  order matters as the first hit in the array will be hit
@@ -84,7 +84,8 @@ label heroLoop
 if cnt = Flats.length gotsubreturn // end of NPCs, return.
 if hero_i = HEROES.length goto endHeroAttacks
 curHero = HEROES[hero_i]
-if curHero.maxlevel < CurNPC.level goto HeroNotHighEnough
+if curHero.maxlevel < CurNPC.level goto HeroNotHitNPC
+if curHero.minlevel > CurNPC.level goto HeroNotHitNPC
 if FieldIdToCoords(Flats[cnt]) = "0,0" goto MainLoop  // scan borked, restart
 if city.findHeroByName(curHero.name).isMarching goto HeroIsMarching
 execute "waithero " + curHero.name
@@ -96,9 +97,13 @@ goto HitNextNPC
 
 label HeroIsMarching
 @echo curHero.name + " is marching, not waiting for them"
-goto HitNextNPC
-label HeroNotHighEnough
-@echo "Skipping hits with hero " + curHero.name + " because their maxlevel " + curHero.maxlevel + " is less than " + CurNPC.level
+goto NextHero
+label HeroNotHitNPC
+@echo "Skipping hits with hero " + curHero.name + " because their configuration says not to hit " + CurNPC.level + " NPCs"
+label NextHero
+hero_i = hero_i + i
+goto heroLoop
+
 label HitNextNPC
 hero_i = hero_i + 1
 cnt = cnt + 1
