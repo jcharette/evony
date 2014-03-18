@@ -84,6 +84,7 @@ gosub CheckTroops
 if !enough_troops gosubreturn // not enough troops for this NPC level, return.
 hero_i = 0
 max_ttime = 0
+waithero = ""
 
 label heroLoop
 if cnt = Flats.length gotsubreturn // end of NPCs, return.
@@ -97,7 +98,7 @@ if city.findHeroByName(curHero.name).isMarching goto HeroIsMarching
 execute "waithero " + curHero.name
 execute "attack " + FieldIdToCoords(Flats[cnt]) + " " + curHero.name + " " + CurNPC.attack
 ttime = city.getTravelTime(city.fieldId, Flats[cnt], GetTroops(CurNPC.attack), 5 )
-ttime = round( ttime * 2 )
+ttime = round( (ttime - 5) * 2)  
 if ttime > max_ttime max_ttime = ttime
 goto HitNextNPC
 
@@ -110,7 +111,7 @@ goto NextHero
 label HeroNotHitNPC
 @echo "Skipping hits with hero " + curHero.name + " because their configuration says not to hit " + CurNPC.level + " NPCs"
 label NextHero
-hero_i = hero_i + i
+hero_i = hero_i + 1
 goto heroLoop
 
 label HitNextNPC
@@ -120,7 +121,7 @@ goto heroLoop
 
 label endHeroAttacks
 @echo "Sleeping " max_ttime + " seconds for attacks to return"
-execute "sleep " + max_ttime  // wait for longest walker to return
+execute "sleep " + max_ttime  // yeild while waiting for longest walker to return
 goto HitNPCs
 
 //------
