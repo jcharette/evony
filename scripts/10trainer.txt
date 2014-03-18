@@ -105,7 +105,8 @@ cnt = cnt + 1
 goto heroLoop
 
 label endHeroAttacks
-execute "sleep " + max_ttime
+@echo "Sleeping " max_ttime * 2 + " seconds for attacks to return"
+execute "sleep " + max_ttime * 2 // wait for longest walker to return
 goto HitNPCs
 
 //------
