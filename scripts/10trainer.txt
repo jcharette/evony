@@ -1,55 +1,104 @@
 // how far out to farm
-distance = 5
+DISTANCE = 20
 
 // hero and what you want to send for troops
-thero = "iamjc"
-trainingtroops = "a:85k,s:10k"
+// currently only works with 1 hero
+HEROS = [ "Broderick" ]
 
-// min arch to send at
-archmin = 200000
+// HITS are npcs you want to train and hit, 
+// each array element is a subarray containing
+// level, attack troops, min_troops (based off attack_troops, currently only archers, cav or wars are checked)
+// Hits are perfomed in the order of the array, restarting if we exceed our cycle time
+// so have what you want most often hit first
+HITS = [ [ 10, "a:95k,s:5k", 200000 ], [ 8, "w:95k", 200000 ] ]
 
-// set to true if you want lots of info, false if not
-spammy = true
+// truce if someone moves in?
+AUTOTRUCE = false
 
+// How often should I Hit?  ( in minutes, 60 = 1 hr, 480 = 8hr )
+CYCLE_TIME = 60
+
+MAINT_PAUSE = 60  // delay for maintenance (in minutes)
+
+///////////////////////////////////////////////////////
 //  DONT CHANGE ANYTHING BELOW THIS
+///////////////////////////////////////////////////////
 
-loopcount = 0
+label MainLoop
+@echo "-- Loop Start --"
+starttime = date()
+i = 0 // current hit 
+execute "rescanmap " + city.x + "," + city.y + " " + DISTANCE
+label NPCLoop
+if i = HITS.length goto MainLoop  // we're at the end of our hits, restart!
+CurNPC = HITS[i]
+// element 0 is npc level to hit
+Flats = FindField( city.x, city.y, DISTANCE, 12, CurNPC[0] ).sort(city.compareByDistanceToCastle)
+@echo Flats.length + " level " + CurNPC[0] + " NPCs found."
+gosub CheckTroops
+@echo "We have enough troops to proceed with hits!"
+cnt = 0
+gosub HitNPCs
+i = i + 1
+goto NPCLoop
+timeDiffMin = (date() - starttime)/1000
+if timeDiffMin < (CYCLE_TIME * 60)  execute "sleep " + timeDiffMin  // we haven't finished a cycle, sleep
+goto MainLoop
 
-label TrainingStart
+//------
+label CheckTroops
+if CurNPC[1].substr(0,2) = "a:" if ( city.troop.archer > CurNPC[2] ) gosubreturn
+if CurNPC[1].substr(0,2) = "c:" if ( city.troop.lightCavalry > CurNPC[2] ) gosubreturn
+if CurNPC[1].substr(0,2) = "w:" if ( city.troop.militia > CurNPC[2] ) gosubreturn
+echo "You have ran out of troops, waiting 5 minutes and will retry"
+sleep 300
+goto CheckTroops
 
-label MakeTroops
-if city.troop.archer<archmin execute "sleep 00:30:00"
-if city.troop.archer<archmin goto MakeTroops
-
-// initialize npc10s to be hit
-Flats = FindField(city.x, city.y, distance, 12, 10)
-if spammy == true echo "Training hero on Level 10 NPCS"
-j = 0
-
-label ShowFlats
-if spammy == true echo GetX(Flats[j]) + "," + GetY(Flats[j]) + " is level " + GetLevel(Flats[j])
-j = j + 1
-if j<Flats.length goto ShowFlats
-
-j = 0
-label HitNPCs 
-if spammy == true echo "waiting for " + thero
-execute "waithero " + thero
-if Flats[j] == 0 goto NextNPC
-FlatX = GetX(Flats[j])
-if FlatX == 0 goto NextNPC
-ttime = city.getTravelTime(city.fieldId, Flats[j], GetTroops("a:1"), 5)
-ttime = round(ttime+5)
-if spammy == true echo "OneWay TravelTime = " + ttime
-if spammy == true echo "attacking " + GetX(Flats[j]) + "," + GetY(Flats[j]) 
-execute "attack " + GetX(Flats[j]) + "," + GetY(Flats[j]) + " " + thero + " " + trainingtroops
-if spammy == true echo "sleeping " + ttime + " for attack to land" 
+//------
+// Flats contains NPCs to hit, CurNPC[1] is the attack troops hit
+label HitNPCs
+if m_context.maintenanceStart goto MaintPause
+if cnt == Flats.length gosubreturn  // gone through all NPCs, return
+if ((date() - starttime)/1000) > (CYCLE_TIME * 60) goto MainLoop  // we've exceed our CYCLE, restart!
+gosub NPCCheck
+hero_i = 0
+label heroLoop
+curHero = HEROS[hero_i]
+if FieldIdToCoords(Flats[cnt]) = "0,0" goto MainLoop
+execute "waithero " + curHero
+execute "attack " + FieldIdToCoords(Flats[cnt]) + " " + curHero + " " + CurNPC[1]
+ttime = city.getTravelTime(city.fieldId, Flats[cnt], GetTroops(CurNPC[1]), 5 )
+ttime = round( ttime +1 )
 execute "sleep " + ttime
-if spammy == true echo "sleeping " + ttime + " for attack to return"
-execute "sleep " + ttime
-label NextNPC
-j = j+1
-if j<Flats.length goto HitNPCs
+cnt = cnt + 1
+goto HitNPCs
 
-sleep 02:00:00
-goto TrainingStart
+//------
+label NPCCheck
+fType = GetType(Flats[cnt])
+if fType = -1 repeat // didn't get read, try again
+if fType = 10 goto NPCVanished
+detail = GetDetailInfo( Flats[cnt], false, 10 )
+if !detail repeat
+if !detail.npc goto EnemyExists
+gosubreturn
+
+//----------------------------------------------------------------------------
+label NPCVanished
+echo "At least one of your npc's has gone. Check your area for"
+echo "red's, but most likely a maintenance cleanup."
+goto start
+
+//----------------------------------------------------------------------------
+label EnemyExists
+if AUTOTRUCE truce
+config wartown:2
+recallall
+echo "NPC " + FieldIdToCoords(Flats[cnt]) + " has been capped by " + detail.userName + ", so script stopped and wartown 2 set."
+end
+
+//------
+label MaintPause
+@echo "Pausing for Maintenance"
+execute "sleep " + MAINT_PAUSE * 60
+goto MainLoop
