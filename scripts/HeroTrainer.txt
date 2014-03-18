@@ -128,7 +128,7 @@ gosubreturn
 label NPCVanished
 @echo "At least one of your npc's has gone. Check your area for red's"
 @echo but most likely a maintenance cleanup."
-goto start
+goto MainLoop
 
 //----------------------------------------------------------------------------
 label EnemyExists
