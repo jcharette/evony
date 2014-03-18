@@ -11,7 +11,7 @@ HEROES = [ { name:"Broderick", minlevel:8, maxlevel:10 } ]
 // first on each cycle
 // YOU MUST FOLLOW THE FORMAT BELOW! and all on the same line for now.  no limit on length though.
 // level = npc level to hit, attack = attack to hit with, min troops = min troops to have in city, range = max range to hit npc 
-HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:20 }, { level:8, attack:"w:95000", min_troops:200000, range:5 } ]
+HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:20 }, { level:8, attack:"w:95000", min_troops:200000, range:5 } , { level:5, attack:"w:3000", min_troops:10000, range:3 } ]
 	
 // truce if someone moves in?
 AUTOTRUCE = false
