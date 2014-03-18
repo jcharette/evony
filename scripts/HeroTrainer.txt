@@ -30,10 +30,12 @@ label MainLoop
 @echo "-- Loop Start --"
 starttime = date()
 i = 0 // current hit 
+max_scan = 0
 label NPCLoop
 if i = HITS.length goto NPCLoop  // we're at the end of our list, wait if we have to and go again..
 CurNPC = HITS[i]
-execute "rescanmap " + city.x + "," + city.y + " " + CurNPC.range
+if CurNPC.range < max_scan execute "rescanmap " + city.x + "," + city.y + " " + CurNPC.range
+if CurNPC.range < max_scan max_scan = curNPC.range
 // element 0 is npc level to hit
 Flats = FindField( city.x, city.y, CurNPC.range, 12, CurNPC.level).sort(city.compareByDistanceToCastle)
 @echo Flats.length + " level " + CurNPC.level + " NPCs found."
