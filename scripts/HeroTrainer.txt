@@ -1,18 +1,19 @@
-
-
 // hero and what you want to send for troops
 // *all* values must be present for each hero in list.
 // format { name:"hero name", maxlevel:max level NPC to hit, minlevel: min to hit }
 // example: HEROES = [ { name:"Joe", minlevel:5, maxlevel:8 }, { name:"Fred", minlevel:8, maxlevel:10 }
-HEROES = [ { name:"Broderick", minlevel:5, maxlevel:10 }, { name:"T2", minlevel:9, maxlevel:10 } ]
+HEROES = [ { name:"Broderick", minlevel:5, maxlevel:10 }, { name:"T2", minlevel:9, maxlevel:10 }, { name:"Mandel", minlevel:8, maxlevel:8 } ]
 
 // HITS are npcs you want to train and hit, 
 // each {} encapulates a set of NPC hits.  order matters as the first hit in the array will be hit
 // first on each cycle
 // YOU MUST FOLLOW THE FORMAT BELOW! and all on the same line for now.  no limit on length though.
-// level = npc level to hit, attack = attack to hit with, min troops = min troops to have in city, range = max range to hit npc 
-// your attack strings must start with a:, w: or c: as well.
-HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:20 }, { level:8, attack:"w:95000", min_troops:200000, range:5 } , { level:5, attack:"w:3000,b:500", min_troops:10000, range:3 } ]
+// level = npc level to hit, 
+// attack = attack to hit with ** your attack strings must start with a:, w: or c: **
+// min troops = min troops to have in city, 
+// range = max range to hit npc 
+// min_att = min attack to hit this level with
+HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:10, min_att:220 }, { level:8, attack:"w:95000", min_troops:200000, range:5, min_att:160 } , { level:5, attack:"w:3000,b:500", min_troops:10000, range:3, min_att:50 } ]
 	
 // truce if someone moves in?
 AUTOTRUCE = false
@@ -24,111 +25,122 @@ MAINT_PAUSE = 60  // delay for maintenance (in minutes)
 
 ///////////////////////////////////////////////////////
 //  DONT CHANGE ANYTHING BELOW THIS
+IgnoreHero = -1
 
-// gosub CheckInnHeroes
+// find max range for scan
+i = 0 
+max_scan = 0
+
+label FindMaxRangeLoop
+if i = HITS.length goto EndMaxRangeLoop
+if HITS[i].range > max_scan max_scan = HITS[i].range
+i = i + 1
+goto FindMaxRangeLoop
+label EndMaxRangeLoop
 
 label MainLoop
-@echo "-- Loop Start --"
 starttime = date()
-i = 0 // current hit 
-max_scan = 0
-label NPCLoop
-if i = HITS.length goto NPCLoop  // we're at the end of our list, wait if we have to and go again..
-CurNPC = HITS[i]
-if CurNPC.range < max_scan execute "rescanmap " + city.x + "," + city.y + " " + CurNPC.range
-if CurNPC.range < max_scan max_scan = curNPC.range
-// element 0 is npc level to hit
-Flats = FindField( city.x, city.y, CurNPC.range, 12, CurNPC.level).sort(city.compareByDistanceToCastle)
-@echo Flats.length + " level " + CurNPC.level + " NPCs found."
-if Flats.length = 0 goto NextNPC
-cnt = 0
-gosub CheckTroops
-if ! enough_troops @echo "Skipping " + CurNPC.level + " NPC hits due troop count"
-if enough_troops gosub HitNPCs
-label NextNPC
+@echo "-- Training Loop Start -- " + starttime + " --"
+@echo "Rescanning map for new NPCs at range of " + max_scan
+execute "rescanmap " + city.x + "," + city.y + " " + max_scan
+
+@echo "Finding NPCs for Hits"
+// load all fields
+i = 0
+FLATS = []
+label LoadFLATSLoop
+fl = FindField( city.x, city.y, HITS[i].range, 12, HITS[i].level ).sort(city.compareByDistanceToCastle)
+//fl = FindField( city.x, city.y, HITS[i].range, 12, HITS[i].level )
+obj = { flats:fl }
+dummy = FLATS.push(obj)
+@echo FLATS[i].flats.length + " level " + HITS[i].level + " NPCs found."
 i = i + 1
-goto NPCLoop
-@echo "Hit " + cnt + " " + CurNPC.level + " NPC's.  Number may have been reduced by troop counts"
+if i = HITS.length goto EndLoadFLATSLoop
+goto LoadFLATSLoop
+label EndLoadFLATSLoop
+
+label HeroHitLoop
 timeDiffMin = (date() - starttime)/1000
-if timeDiffMin < (CYCLE_TIME * 60)  execute "sleep " + timeDiffMin  // we haven't finished a cycle, sleep
-goto MainLoop
+if timeDiffMin > (CYCLE_TIME * 60) goto MainLoop  // reset scans
 
-//--Check Heroes
-label CheckInnHeroes
+@echo "Finding Free Hero"
 h_i = 0
-label CheckInnHeroLoop
-if HEROES.length = h_i gosubreturn
-if ! city.findHeroByName( HEROES[h_i].name ) goto HeroNotInCity
+label __findHeroLoop
+if h_i = IgnoreHero goto __findHeroNext
+if h_i = HEROES.length goto NoFreeHero
+h_obj = city.findHeroByName( HEROES[h_i].name )
+if h_obj if h_obj.isAvailable goto __findHeroLoopEnd
+label __findHeroNext
 h_i = h_i + 1
-goto CheckInnHeroLoop
-label HeroNotInCity
-@echo "Error, Hero " + HEROES[h_i].name + " is not in your city. Something is wrong with your config"
-end
+goto __findHeroLoop
+label __findHeroLoopEnd
+CurHero = h_i
+IgnoreHero = -1
+@echo HEROES[CurHero].name + " is available for training."
 
-//------
-label CheckTroops
-enough_troops = false
-if CurNPC.attack.substr(0,2) = "a:" if ( city.troop.archer > CurNPC.min_troops ) enough_troops = true
-if CurNPC.attack.substr(0,2) = "c:" if ( city.troop.lightCavalry > CurNPC.min_troops ) enough_troops = true
-if CurNPC.attack.substr(0,2) = "w:" if ( city.troop.militia > CurNPC.min_troops ) enough_troops = true
-gosubreturn
+// find highest possible Flat array to hit
+maxHitLevel = -1
+CurNPC = -1
+fl_i = 0
+label __findNPCLoop
+if fl_i = FLATS.length goto __findNPCLoopEnd
+if FLATS[fl_i].flats.length >0 gosub CheckFlat
+fl_i = fl_i + 1
+goto __findNPCLoop
+label __findNPCLoopEnd
 
-//------
-// Flats contains NPCs to hit, CurNPC is the current NPC object we are hitting
-label HitNPCs
+// hit em if we got em
+if CurNPC = -1 goto NoNPCFoundForHero
+hit = HITS[CurNPC]
+hitlevel = hit.level
 if m_context.maintenanceStart goto MaintPause
-if cnt = Flats.length gosubreturn  // gone through all NPCs, return
-if ((date() - starttime)/1000) > (CYCLE_TIME * 60) goto MainLoop  // we've exceed our CYCLE, restart!
+CityID = FLATS[CurNPC].flats.shift()
+CityLoc = FieldIdToCoords( CityID )
+if CityLoc = "0,0" goto MainLoop // scan borked, restart 
+@echo "NPC Level:" + hitlevel + " has been found at " + CityLoc + " for hero " + HEROES[CurHero].name
 gosub NPCCheck
-gosub CheckTroops
-if !enough_troops gosubreturn // not enough troops for this NPC level, return.
-hero_i = 0
-max_ttime = 0
+execute "attack " + CityLoc + " " + HEROES[CurHero].name + " " + hit.attack
 
-label heroLoop
-if cnt = Flats.length gotsubreturn // end of NPCs, return.
-if hero_i = HEROES.length goto endHeroAttacks
-curHero = HEROES[hero_i]
-if curHero.maxlevel < CurNPC.level goto HeroNotHitNPC
-if curHero.minlevel > CurNPC.level goto HeroNotHitNPC
-if FieldIdToCoords(Flats[cnt]) = "0,0" goto MainLoop  // scan borked, restart
-if !city.findHeroByName(curHero.name) goto HeroNotFound
-if city.findHeroByName(curHero.name).isMarching goto HeroIsMarching
-execute "waithero " + curHero.name
-execute "attack " + FieldIdToCoords(Flats[cnt]) + " " + curHero.name + " " + CurNPC.attack
-ttime = city.getTravelTime(city.fieldId, Flats[cnt], GetTroops(CurNPC.attack), 5 )
-ttime = round( (ttime - 5) * 2)  
-if ttime > max_ttime max_ttime = ttime
-goto HitNextNPC
+goto HeroHitLoop  // find next hero, hit if we can
 
-label HeroIsMarching
-@echo curHero.name + " is marching, not waiting for them"
-goto NextHero
-label HeroNotFound
-@echo curHero.name + " is not found in your city, assuming trainer?"
-goto NextHero
-label HeroNotHitNPC
-@echo "Skipping hits with hero " + curHero.name + " because their configuration says not to hit " + CurNPC.level + " NPCs"
-label NextHero
-hero_i = hero_i + 1
-goto heroLoop
+/////////////////////////////////////////////////////////
 
-label HitNextNPC
-hero_i = hero_i + 1
-cnt = cnt + 1
-goto heroLoop
+label NoFreeHero
+@echo "No Free Heroes found, sleeping for 30 seconds and will try again"
+execute "sleep 00:00:30"
+goto HeroHitLoop
 
-label endHeroAttacks
-@echo "Sleeping " max_ttime + " seconds for attacks to return"
-execute "sleep " + max_ttime  // yeild while waiting for longest walker to return
-goto HitNPCs
+label NoNPCFoundForHero
+@echo "No NPC found for " + HEROES[CurHero].name + " to hit, trying next free hero"
+IgnoreHero = CurHero
+goto HeroHitLoop
+
+////////////////////////////////////////////////////////
+// fl_i = Current Index in FLATS array we are comparing
+// maxHitLevel is the last found highest level
+// CurNPC is the index of the last found
+label CheckFlat
+if HEROES[CurHero].maxlevel < HITS[fl_i].level return 
+if HEROES[CurHero].minlevel > HITS[fl_i].level return 
+_m = max( maxHitLevel, HITS[fl_i].level )
+if _m > maxHitLevel goto __cfFoundHigherNPC
+return
+label __cfFoundHigherNPC
+enough_troops = false
+if HITS[fl_i].attack.substr(0,2) = "a:" if ( city.troop.archer > HITS[fl_i].min_troops ) enough_troops = true
+if HITS[fl_i].attack.substr(0,2) = "c:" if ( city.troop.lightCavalry > HITS[fl_i].min_troops ) enough_troops = true
+if HITS[fl_i].attack.substr(0,2) = "w:" if ( city.troop.militia > HITS[fl_i].min_troops ) enough_troops = true
+if !enough_troops return
+CurNPC = fl_i
+maxHitLevel = _m
+return
 
 //------
 label NPCCheck
-fType = GetType(Flats[cnt])
+fType = GetType(CityID)
 if fType = -1 repeat // didn't get read, try again
 if fType = 10 goto NPCVanished
-detail = GetDetailInfo( Flats[cnt], false, 10 )
+detail = GetDetailInfo( CityID, false, 10 )
 if !detail repeat
 if !detail.npc goto EnemyExists
 gosubreturn
@@ -144,7 +156,7 @@ label EnemyExists
 if AUTOTRUCE truce
 config wartown:2
 recallall
-@echo "NPC " + FieldIdToCoords(Flats[cnt]) + " has been capped by " + detail.userName + ", so script stopped and wartown 2 set."
+@echo "NPC " + FieldIdToCoords(CityID) + " has been capped by " + detail.userName + ", so script stopped and wartown 2 set."
 end
 
 //------
