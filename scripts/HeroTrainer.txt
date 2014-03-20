@@ -137,6 +137,7 @@ if HITS[fl_i].attack.substr(0,2) = "w:" if ( city.troop.militia > HITS[fl_i].min
 if !enough_troops return
 CurNPC = fl_i
 maxHitLevel = _m
+if HEROES[CurHero].maxlevel = HITS[fl_i].level return // Hero's max level NPC found, and can be hit, don't search for more.
 return
 
 //------
