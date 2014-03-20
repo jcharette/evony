@@ -5,7 +5,7 @@
 HEROES = [ { name:"Broderick", minlevel:5, maxlevel:10 }, { name:"T2", minlevel:9, maxlevel:10 }, { name:"Mandel", minlevel:8, maxlevel:8 } ]
 
 // HITS are npcs you want to train and hit, 
-// each {} encapulates a set of NPC hits.  order matters as the first hit in the array will be hit
+// each {} encapsulates a set of NPC hits.  order matters as the first hit in the array will be hit
 // first on each cycle
 // YOU MUST FOLLOW THE FORMAT BELOW! and all on the same line for now.  no limit on length though.
 // level = npc level to hit, 
@@ -73,7 +73,7 @@ label HeroHitLoop
 timeDiffMin = (date() - starttime)/1000
 if timeDiffMin > (CYCLE_TIME * 60) goto MainLoop  // reset scans
 
-@echo "Finding Free Hero"
+@echo "Searching for Free Hero"
 h_i = 0
 label __findHeroLoop
 if h_i = IgnoreHero goto __findHeroNext
