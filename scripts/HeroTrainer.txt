@@ -33,7 +33,7 @@ max_scan = 0
 
 label FindMaxRangeLoop
 if i = HITS.length goto EndMaxRangeLoop
-if HITS[i].range > max_scan max_scan = HITS[i].range
+max_scan = max( max_scan, HITS[i].range )
 i = i + 1
 goto FindMaxRangeLoop
 label EndMaxRangeLoop
@@ -50,7 +50,6 @@ i = 0
 FLATS = []
 label LoadFLATSLoop
 fl = FindField( city.x, city.y, HITS[i].range, 12, HITS[i].level ).sort(city.compareByDistanceToCastle)
-//fl = FindField( city.x, city.y, HITS[i].range, 12, HITS[i].level )
 obj = { flats:fl }
 dummy = FLATS.push(obj)
 @echo FLATS[i].flats.length + " level " + HITS[i].level + " NPCs found."
@@ -94,6 +93,7 @@ if CurNPC = -1 goto NoNPCFoundForHero
 hit = HITS[CurNPC]
 hitlevel = hit.level
 if m_context.maintenanceStart goto MaintPause
+if !h_obj.isAvailble goto HeroMoved
 CityID = FLATS[CurNPC].flats.shift()
 CityLoc = FieldIdToCoords( CityID )
 if CityLoc = "0,0" goto MainLoop // scan borked, restart 
@@ -104,6 +104,10 @@ execute "attack " + CityLoc + " " + HEROES[CurHero].name + " " + hit.attack
 goto HeroHitLoop  // find next hero, hit if we can
 
 /////////////////////////////////////////////////////////
+
+label HeroMoved
+@echo "Hero must have moved as its not available, restarting hero search"
+goto HeroHitLoop
 
 label NoFreeHero
 @echo "No Free Heroes found, sleeping for 30 seconds and will try again"
