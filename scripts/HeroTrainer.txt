@@ -21,19 +21,30 @@ AUTOTRUCE = false
 // How often should I Hit?  ( in minutes, 60 = 1 hr, 480 = 8hr )
 CYCLE_TIME = 60
 
+//
 MAINT_PAUSE = 60  // delay for maintenance (in minutes)
+
+// Do I want safety checks on NPCs or should I train as fast as possible
+// safety checks watch for people taking your NPCs in hopes of caping your hero.  
+// It is recommended you do not change this, but you can if you want things to go faster
+NPC_SAFETY_CHECK = true
 
 ///////////////////////////////////////////////////////
 //  DONT CHANGE ANYTHING BELOW THIS
 IgnoreHero = -1
 
+@echo "-- Initializing Trainer --"
+
 // find max range for scan
 i = 0 
 max_scan = 0
 
+HIT_TROOPS = []
+
 label FindMaxRangeLoop
 if i = HITS.length goto EndMaxRangeLoop
 max_scan = max( max_scan, HITS[i].range )
+dummy = HIT_TROOPS.push( { testStr:HITS[i].attack.substr(0,2), troops:HITS[i].min_troops } )
 i = i + 1
 goto FindMaxRangeLoop
 label EndMaxRangeLoop
@@ -44,7 +55,7 @@ starttime = date()
 @echo "Rescanning map for new NPCs at range of " + max_scan
 execute "rescanmap " + city.x + "," + city.y + " " + max_scan
 
-@echo "Finding NPCs for Hits"
+@echo "Finding NPCs"
 // load all fields
 i = 0
 FLATS = []
@@ -97,7 +108,7 @@ CityID = FLATS[CurNPC].flats.shift()
 CityLoc = FieldIdToCoords( CityID )
 if CityLoc = "0,0" goto MainLoop // scan borked, restart 
 @echo "NPC Level:" + hitlevel + " has been found at " + CityLoc + " for hero " + HEROES[CurHero].name
-gosub NPCCheck
+if NPC_SAFETY_CHECK gosub NPCCheck
 execute "attack " + CityLoc + " " + HEROES[CurHero].name + " " + hit.attack
 
 goto HeroHitLoop  // find next hero, hit if we can
@@ -131,9 +142,9 @@ if _m > maxHitLevel goto __cfFoundHigherNPC
 return
 label __cfFoundHigherNPC
 enough_troops = false
-if HITS[fl_i].attack.substr(0,2) = "a:" if ( city.troop.archer > HITS[fl_i].min_troops ) enough_troops = true
-if HITS[fl_i].attack.substr(0,2) = "c:" if ( city.troop.lightCavalry > HITS[fl_i].min_troops ) enough_troops = true
-if HITS[fl_i].attack.substr(0,2) = "w:" if ( city.troop.militia > HITS[fl_i].min_troops ) enough_troops = true
+if HIT_TROOPS[fl_i].testStr = "a:" if ( city.troop.archer > HITS[fl_i].min_troops ) enough_troops = true
+if HIT_TROOPS[fl_i].testStr = "c:" if ( city.troop.lightCavalry > HITS[fl_i].min_troops ) enough_troops = true
+if HIT_TROOPS[fl_i].testStr = "w:" if ( city.troop.militia > HITS[fl_i].min_troops ) enough_troops = true
 if !enough_troops return
 CurNPC = fl_i
 maxHitLevel = _m
