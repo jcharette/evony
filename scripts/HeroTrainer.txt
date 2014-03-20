@@ -93,7 +93,6 @@ if CurNPC = -1 goto NoNPCFoundForHero
 hit = HITS[CurNPC]
 hitlevel = hit.level
 if m_context.maintenanceStart goto MaintPause
-if h_obj.isAvailble = false goto HeroMoved
 CityID = FLATS[CurNPC].flats.shift()
 CityLoc = FieldIdToCoords( CityID )
 if CityLoc = "0,0" goto MainLoop // scan borked, restart 
