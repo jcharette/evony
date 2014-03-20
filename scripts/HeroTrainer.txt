@@ -5,14 +5,13 @@
 HEROES = [ { name:"Broderick", minlevel:5, maxlevel:10 }, { name:"T2", minlevel:9, maxlevel:10 }, { name:"Mandel", minlevel:8, maxlevel:8 } ]
 
 // HITS are npcs you want to train and hit, 
-// each {} encapsulates a set of NPC hits.  order matters as the first hit in the array will be hit
-// first on each cycle
 // YOU MUST FOLLOW THE FORMAT BELOW! and all on the same line for now.  no limit on length though.
-// level = npc level to hit, 
-// attack = attack to hit with ** your attack strings must start with a:, w: or c: **
-// min troops = min troops to have in city, 
-// range = max range to hit npc 
-// min_att = min attack to hit this level with
+// format { level:<>, attack:<>, min_troops:<>, range:<>, min_att:<> }
+//     level = npc level to hit 
+//     attack = attack to hit with ** your attack strings must start with a:, w: or c: **
+//     min troops = min troops to have in city, 
+//     range = max range to hit npc 
+//     min_att = min attack to hit this level with
 HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:10, min_att:220 }, { level:8, attack:"w:95000", min_troops:200000, range:5, min_att:160 } , { level:5, attack:"w:3000,b:500", min_troops:10000, range:3, min_att:50 } ]
 	
 // truce if someone moves in?
@@ -21,8 +20,8 @@ AUTOTRUCE = false
 // How often should I Hit?  ( in minutes, 60 = 1 hr, 480 = 8hr )
 CYCLE_TIME = 60
 
-//
-MAINT_PAUSE = 60  // delay for maintenance (in minutes)
+//  How long to delay during maintenance ( in minutes, 60 = 1hr )
+MAINT_PAUSE = 60  
 
 // Do I want safety checks on NPCs or should I train as fast as possible
 // safety checks watch for people taking your NPCs in hopes of caping your hero.  
