@@ -13,9 +13,6 @@ HEROES = [ { name:"Broderick", minlevel:5, maxlevel:10 }, { name:"T2", minlevel:
 //     range = max range to hit npc 
 //     min_att = min attack to hit this level with
 HITS = [ { level:10, attack:"a:95000,s:5000", min_troops:200000, range:10, min_att:220 }, { level:8, attack:"w:95000", min_troops:200000, range:5, min_att:160 } , { level:5, attack:"w:3000,b:500", min_troops:10000, range:3, min_att:50 } ]
-	
-// truce if someone moves in?
-AUTOTRUCE = false
 
 // How often should I Hit?  ( in minutes, 60 = 1 hr, 480 = 8hr )
 CYCLE_TIME = 60
@@ -28,8 +25,13 @@ MAINT_PAUSE = 60
 // It is recommended you do not change this, but you can if you want things to go faster
 NPC_SAFETY_CHECK = true
 
+// truce if someone moves in?
+AUTOTRUCE = false
+
 ///////////////////////////////////////////////////////
 //  DONT CHANGE ANYTHING BELOW THIS
+///////////////////////////////////////////////////////
+
 IgnoreHero = -1
 
 @echo "-- Initializing Trainer --"
@@ -48,6 +50,8 @@ i = i + 1
 goto FindMaxRangeLoop
 label EndMaxRangeLoop
 
+/// preloading complete, main loop is here
+
 label MainLoop
 starttime = date()
 @echo "-- Training Loop Start -- " + starttime + " --"
@@ -55,7 +59,7 @@ starttime = date()
 execute "rescanmap " + city.x + "," + city.y + " " + max_scan
 
 @echo "Finding NPCs"
-// load all fields
+// clear and scan all new NPCs
 i = 0
 FLATS = []
 label LoadFLATSLoop
@@ -98,6 +102,7 @@ fl_i = fl_i + 1
 goto __findNPCLoop
 label __findNPCLoopEnd
 
+label FoundNPC
 // hit em if we got em
 if CurNPC = -1 goto NoNPCFoundForHero
 hit = HITS[CurNPC]
@@ -147,7 +152,7 @@ if HIT_TROOPS[fl_i].testStr = "w:" if ( city.troop.militia > HITS[fl_i].min_troo
 if !enough_troops return
 CurNPC = fl_i
 maxHitLevel = _m
-if HEROES[CurHero].maxlevel = HITS[fl_i].level return // Hero's max level NPC found, and can be hit, don't search for more.
+if HEROES[CurHero].maxlevel = HITS[fl_i].level goto FoundNPC // Hero's max level NPC found, and can be hit, don't search for more.
 return
 
 //------
