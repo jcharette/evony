@@ -1,0 +1,218 @@
+// Enhanced Bulletproof City
+
+config wartown:0
+config warrules:1
+homeheroes 2
+
+set trainer adonis
+set polhero harley
+set besthero %trainer%
+
+set warcity tabs
+set rescity %warcity%
+
+sendresources %rescity% food 250m 40b 100m 
+//sendresources %rescity% gold 10m 40b 5m 
+sendresources %rescity% wood 10m 40b 5m  
+sendresources %rescity% iron 10m 40b 5m 
+
+keeptroops %warcity% wo:1k,w:1k,s:100k,p:1k,sw:1k,a:125k,c:1k,t:50k,b:5k,cata:500 10k
+
+//requesttroops %warcity% wo 750 5k 250
+//requesttroops %warcity% w 750 5k 250
+//requesttroops %warcity% p 750 5k 250
+//requesttroops %warcity% sw 750 5k 250
+//requesttroops %warcity% c 50k 100k 1k
+//requesttroops %warcity% archer 75k 200k 25k
+//requesttroops %warcity% scout 50k 150k 25k
+//requesttroops %warcity% transport 75k 100k 25k
+//requesttroops %warcity% ballista 1k 50k 500
+//requesttroops %warcity% cata 100 10k 150
+
+config nomayor:0 
+
+//========================================
+// basic city goals
+//========================================
+
+reportstokeep 1 a:500 b:2 a:3800 a:6000
+
+config comfort:1
+comfortpolicy 15 21 popraise
+
+distancepolicy 6 6 5 8 10
+
+processingpolicy a:10 n:20 b:8 *:5
+// order and priority of tasks
+
+//rallypolicy a:2 b:2 r:1 v:9 m:1
+//rally while in truce
+
+
+///=======================================
+/// hero management 
+///=======================================
+
+config hero:11
+config fasthero:70
+
+config trainpol:1
+
+config trainint:1
+
+config training:1
+
+traininghero %trainer% 30 60
+npcheroes !%trainer%,any
+npcheroes 8 !%polhero%,any:base>70,att<best,att>60
+npcheroes 10 %trainer%,%besthero%,any:base>70,att=best
+valleyheroes !%trainer%,any:att<best
+
+nolevelheroes any:intel>=163
+keepheroes any:level>=70|any:base>=69
+keepcapturedheroes any:level>=100|any:base>68
+
+config feastinghallspace:0
+config keepatthome:1
+
+
+///=======================================
+// npc building & farming goals
+///=======================================
+
+config npc:1
+
+npctroop 5 b:450
+#npclimits 8 w:100k
+#npctroop 8 w:88k,t:2k
+npclimits 10 a:100k
+//npctroop 10 a:93k,s:5k,t:2k
+
+config buildnpc:15
+npcbuildpolicy /level:5 /mindistance:5 /maxdistance:10
+npcbuildpolicy /level:10 /mindistance:1 /maxdistance:6
+// build lvl 5 and 10 npcs only, 5's for 4-15 miles and 10's for 1-5 miles
+
+config acquireflats:1
+
+config abandonflats:1
+
+
+///=======================================
+/// resource management
+///=======================================
+
+config trade:1
+tradepolicy /type:gold /min:10m
+tradepolicy /type:food /min:2d /max:2b /batch:500k /allowselltomin
+tradepolicy /type:wood /min:5m /max:20m /batch:500k /allowselltomin
+tradepolicy /type:stone /min:10m /max:50m /batch:500k /allowselltomin
+tradepolicy /type:iron /min:5m /max:20m /batch:500k /allowselltomin
+
+requestresources any food 1m 2m 1m scout
+requestresources any gold 1m 2m 1m scout
+requestresources any wood 1m 2m 1m scout
+requestresources any iron 1m 2m 1m scout
+requestresources any stone 1m 2m 1m scout
+
+taxpolicy 0 100
+
+warehousepolicy 90 5 0 5
+// %food %lumber %stone %iron
+
+//========================================
+// defense & combat goals
+//========================================
+
+config attackgap:6
+// how many seconds between different attacks before they're evaded seperately by config hiding
+
+config gate:0.1
+gatepolicy 2 2 2 2 2
+// 0.2 min=12s open/close gate time 
+// gatepolicy (peace) (atk) (sb) (both) (maint) {0= bot 1= open 2= closed}
+
+
+defensepolicy /junktroop:50 /usespeech:10 /usetruce:50 /usewarhorn:1 /usecorselet:0 /usepenicillin:0
+// change minimum troops for consideration of a "real attack"
+// use coreselet, warhorn, penicillin, truce, speechtext as needed at xx loyalty
+
+config embassy:1
+config defensecooldown:30
+// 0 - embassy always closed, 1 - always open, 2 - open for attacks & defense cooldown only
+
+config hiding:0.5
+
+///=======================================
+/// troop production 
+///=======================================
+
+
+config troopqueuetime:.5
+config troopincrement:1
+config reservedbarrack:1
+config troopsusepopmax:1
+config troopsusereserved:0.75
+config troopidlequeuetime:1
+
+troop w:1,p:1,sw:1,a:1,s:1
+troop wo:10,w:10,s:10,p:10,sw:10,a:10,c:10
+troop wo:1k,w:1k,s:100k,p:1k,sw:1k,a:125k,c:1k,t:50k,b:5k,cata:500
+//troop wo:25k,w:25k,s:2m,p:25k,sw:25k,a:2.5m,c:25k,b:200k
+troop a:2.5m,s:2m
+
+///=======================================
+/// valley and medal hunting goals
+///=======================================
+
+config valleymin:1
+config valley:10
+
+valleytroops 1 a:50
+valleytroops 2 a:100
+valleytroops 3 a:200
+valleytroops 4 a:400,sw:1,p:1,s:1,w:1
+valleytroops 5 a:800,sw:1,p:1,s:1,w:1,c:1
+valleytroops 6 a:1600,sw:1,p:1,s:1,w:1,c:1
+valleytroops 7 a:10000,sw:1,p:1,s:1,w:1,c:1,b:1
+valleytroops 8 a:15000,sw:1,p:1,s:1,w:1,c:1,b:1
+valleytroops 9 a:20000,sw:1,p:1,s:1,w:1,c:1,b:1
+valleytroops 10 a:30000,sw:1,p:1,s:1,w:1,c:1,b:1
+
+#valleytroops s:100k
+
+safevalleyfarm 8,9,10
+
+
+///=======================================
+///    fortification build sequence 
+///=======================================
+
+config fortsusereserved:1
+config wallqueuetime:0.01
+
+
+fortification trap:1,ab:1
+fortification trap:6,ab:2
+fortification trap:12,ab:4
+fortification trap:15,ab:5
+fortification trap:18,ab:6
+fortification trap:21,ab:7
+fortification trap:24,ab:8
+fortification trap:30,ab:10,at:1
+fortification trap:100,ab:33,at:4
+fortification trap:200,ab:100,at:10,tre:1
+fortification trap:300,ab:200,at:50,tre:10
+fortification trap:500,ab:300,at:100,tre:20
+fortification trap:750,ab:400,at:200,tre:30
+fortification trap:1000,ab:500,at:300,tre:40
+fortification trap:1250,ab:1000,at:5000,tre:200
+fortification trap:1500,ab:1500,at:8000,tre:300
+fortification trap:2000,ab:2000,at:10000,r:100,tre:5000
+
+//fortification tra:1,ab:1,at:1,r:1
+//fortification tre:12000
+
+///=======================================
+/// building goals
+///=======================================
