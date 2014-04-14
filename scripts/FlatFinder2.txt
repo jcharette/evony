@@ -55,6 +55,7 @@ if x.length = 1 goto nonefound
 echo "Probing..."
 label probe
 y = x.pop().split(",")
+if x.length = 0 goto donescript
 findX=y[0].replace("\"","")
 findY=y[1].replace("\"","")
 ifgosub DoScout = true scout
@@ -86,4 +87,4 @@ label invalidState
 echo "State not valid"
 end
 
-
+label donescript
