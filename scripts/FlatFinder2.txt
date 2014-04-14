@@ -69,19 +69,14 @@ return
 
 label flat
 echo "Looking for flats around " + findX + "," + findY
-i = 1
-label flatloop
-Flats = FindField( findX, findY, i, 10 )
+Flats = FindField( findX, findY, max_flat_distance, 10 )
+if Flats.length = 0 return
+echo "-- Nearby flats found --"
 j = 0
-if Flats.length > 0 gosub ShowFlat
-if i>max_flat_distance return
-i = i+1
-goto flatloop
-
-label ShowFlat
-execute "print Distance: " + i + " Flat found at (" + GetX(Flats[j]) + "," + GetY(Flats[j]) + ")"
-j = j+1
-if j<Flats.length goto ShowFlat
+label showflats
+echo GetX(Flats[j]) + "," + GetY(Flats[j])
+j = j + 1
+if j < Flats.length goto showflats
 return
 
 label nonefound
