@@ -1,0 +1,94 @@
+// Script to scout all members of alliance within a state
+//   Can also be used to scout all cities of one player
+
+echo "Mass Scouter/Flat Finder 2.0"
+
+//------------------------------------------------------------------------------
+//-----User Inputs
+// Specify alliance name, player name, or castle name
+alliance = "V"
+// do mass scout of alliance
+DoScout = false
+// do flat search for doorsteps
+DoFlats = true
+// max distance to look for a flat around target
+max_flat_distance = 5
+
+// state to search using index below
+state = 3
+//  0=Friesland        1=Saxony      2=North March   3=Bohemia
+//  4=Lower Lorraine   5=Franconia   6=Thuringia     7=Moravia
+//  8=Upper Lorraine   9=Swabia     10=Bavaria      11=Carinthia
+// 12=Burgundy        13=Lombardy   14=Tuscany      15=Romagna
+
+// change scancmd to "rescanrec" to force a rescan every run or "scanrec" to refresh map only if not loaded
+scancmd = "scanrec"
+
+
+
+// add hero and troop string if scout-with-force, e.g. "bigguy s:100k"
+scoutStr = ""
+
+//-----End User Inputs
+//------------------------------------------------------------------------------
+
+
+if ((state < 0) + (state > 15)) > 0 goto invalidState
+
+echo "Scanning "+States[state]+" for "+alliance
+
+stateName    = States[state]
+stateLow     = stateName.toLowerCase()
+stateUp      = stateName.toUpperCase()
+
+sx = (state MOD 4) * 200
+sy = floor(state / 4) * 200
+coords = sx + "," + sy + " " + (sx + 199) + "," + (sy + 199)
+
+execute "echo 'Searching ["+coords+"]'"
+@execute scancmd+" "+coords
+@execute "command 'searchcastle "+alliance+"'"
+x = $result
+if x == null goto nonefound
+x = $result.split("\n")
+if x.length = 1 goto nonefound
+echo "Probing..."
+label probe
+y = x.pop().split(",")
+findX=y[0].replace("\"","")
+findY=y[1].replace("\"","")
+ifgosub DoScout = true scout
+ifgosub DoFlats = true flat
+if x.length goto probe
+label done
+end
+
+label scout
+if y[2].indexOf(stateUp) >= 0 execute "scout "+y[0].replace("\""," ")+","+y[1].replace("\""," ")+" "+scoutStr
+return
+
+label flat
+echo "Looking for flats around " + findX + "," + findY
+i = 1
+label flatloop
+Flats = FindField( findX, findY, i, 10 )
+j = 0
+if Flats.length > 0 gosub ShowFlat
+if i>max_flat_distance return
+i = i+1
+goto flatloop
+
+label ShowFlat
+execute "print Distance: " + i + " Flat found at (" + GetX(Flats[j]) + "," + GetY(Flats[j]) + ")"
+j = j+1
+if j<Flats.length goto ShowFlat
+return
+
+label nonefound
+echo "No cities found"
+end
+label invalidState
+echo "State not valid"
+end
+
+
