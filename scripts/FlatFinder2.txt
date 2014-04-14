@@ -58,6 +58,7 @@ y = x.pop().split(",")
 if x.length = 0 goto donescript
 findX=y[0].replace("\"","")
 findY=y[1].replace("\"","")
+if y[2].indexOf(stateUp) < 0 goto probe
 ifgosub DoScout = true scout
 ifgosub DoFlats = true flat
 if x.length goto probe
