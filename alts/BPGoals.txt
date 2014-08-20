@@ -1,22 +1,24 @@
 // Enhanced Bulletproof City
-
 config wartown:0
 config warrules:1
 homeheroes 2
 
-set trainer adonis
-set polhero harley
+set trainer trainer
+set polhero broderick
 set besthero %trainer%
 
-set warcity tabs
-set rescity %warcity%
+set warcity mf3
+set rescity b2
 
-sendresources %rescity% food 250m 40b 100m 
+set troopbase wo:5k,w:100k,s:300k,p:10k,sw:10k,a:300k,c:5k,t:150k,b:5k,r:5k,cp:5k,cata:500
+set troopmake a:10m
+
+sendresources %rescity% food 300m * 100m 
 //sendresources %rescity% gold 10m 40b 5m 
-sendresources %rescity% wood 10m 40b 5m  
-sendresources %rescity% iron 10m 40b 5m 
+sendresources %rescity% wood 30m * 1m scout  
+sendresources %rescity% iron 30m * 1m scout
 
-keeptroops %warcity% wo:1k,w:1k,s:100k,p:1k,sw:1k,a:125k,c:1k,t:50k,b:5k,cata:500 10k
+keeptroops %warcity% %troopbase% 10k
 
 //requesttroops %warcity% wo 750 5k 250
 //requesttroops %warcity% w 750 5k 250
@@ -56,19 +58,19 @@ processingpolicy a:10 n:20 b:8 *:5
 config hero:11
 config fasthero:70
 
-config trainpol:1
+config trainpol:1 
 
 config trainint:1
 
 config training:1
 
-traininghero %trainer% 30 60
+traininghero %trainer% 30 60 3
 npcheroes !%trainer%,any
 npcheroes 8 !%polhero%,any:base>70,att<best,att>60
 npcheroes 10 %trainer%,%besthero%,any:base>70,att=best
 valleyheroes !%trainer%,any:att<best
 
-nolevelheroes any:intel>=163
+nolevelheroes broderick|any:int>att,att>45,int>60|any:pol>51,att>170,base>60|any:att>170,int>50,base>60
 keepheroes any:level>=70|any:base>=69
 keepcapturedheroes any:level>=100|any:base>68
 
@@ -81,12 +83,10 @@ config keepatthome:1
 ///=======================================
 
 config npc:1
-
-npctroop 5 b:450
 #npclimits 8 w:100k
 #npctroop 8 w:88k,t:2k
 npclimits 10 a:100k
-//npctroop 10 a:93k,s:5k,t:2k
+npctroop 10 a:93k,s:5k,t:2k
 
 config buildnpc:15
 npcbuildpolicy /level:5 /mindistance:5 /maxdistance:10
@@ -104,10 +104,10 @@ config abandonflats:1
 
 config trade:1
 tradepolicy /type:gold /min:10m
-tradepolicy /type:food /min:2d /max:2b /batch:500k /allowselltomin
-tradepolicy /type:wood /min:5m /max:20m /batch:500k /allowselltomin
-tradepolicy /type:stone /min:10m /max:50m /batch:500k /allowselltomin
-tradepolicy /type:iron /min:5m /max:20m /batch:500k /allowselltomin
+tradepolicy /type:food /min:2d  /batch:500k /allowselltomin
+tradepolicy /type:wood /min:5m /batch:500k /allowselltomin
+tradepolicy /type:stone /min:10m  /batch:500k /allowselltomin
+tradepolicy /type:iron /min:5m  /batch:500k /allowselltomin
 
 requestresources any food 1m 2m 1m scout
 requestresources any gold 1m 2m 1m scout
@@ -148,18 +148,19 @@ config hiding:0.5
 ///=======================================
 
 
-config troopqueuetime:.5
+config troopqueuetime:.25
 config troopincrement:1
-config reservedbarrack:1
+config reservedbarrack:0
 config troopsusepopmax:1
 config troopsusereserved:0.75
 config troopidlequeuetime:1
 
+//troop sw:50k,p:50k
 troop w:1,p:1,sw:1,a:1,s:1
 troop wo:10,w:10,s:10,p:10,sw:10,a:10,c:10
-troop wo:1k,w:1k,s:100k,p:1k,sw:1k,a:125k,c:1k,t:50k,b:5k,cata:500
-//troop wo:25k,w:25k,s:2m,p:25k,sw:25k,a:2.5m,c:25k,b:200k
-troop a:2.5m,s:2m
+troop wo:1k,w:100k,s:100k,p:1k,sw:1k,a:40k,c:1k,t:50k,b:5k,cata:500
+troop %troopbase%
+troop %troopmake%
 
 ///=======================================
 /// valley and medal hunting goals
@@ -216,3 +217,8 @@ fortification trap:2000,ab:2000,at:10000,r:100,tre:5000
 ///=======================================
 /// building goals
 ///=======================================
+
+///=======================================
+/// research goals
+///=======================================
+

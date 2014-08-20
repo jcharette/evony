@@ -1,0 +1,55 @@
+// Only put this in one city to run. Does not need to be in all.
+// It will check all your cities for incoming attacks and food shortage and broken gates.
+// When incoming attacks are spotted or your gates are broken, it will talk outloud thru your speakers, and in ally chat.
+// It will ignore incoming attacks from any of the specified alliances, so you can attack your alts or be treb hit by alts without spamming AC.
+// You can disable config warrules and audio attack/tts attack warning if you use this, since it covers all 3 areas.
+label autorun
+
+label checkincoming
+x = 0
+
+label nextcity
+cs = cities[x]
+if cs == null sleep 10
+if cs == null goto checkincoming
+cm = cs.cityManager
+enemy = cm.enemyArmies[0]
+
+if enemy gosub gethelp
+if cm.resource.food.amount / cm.resource.troopCostFood < 5 gosub getfood
+if cm.buff("ForceopenclosegateBuff") gosub gatesbroken
+
+x = x + 1
+goto nextcity
+
+label gethelp
+// Below you can add the names of your alliance and alt alliances that may be attacking you with your permission.
+// You can also (or instead) add the names of yourself or authorized people that can attack with permission.
+// Add more lines if you need more exemptions, or delete any of these lines you don't need.
+// Don't forget to keep the "quotes" around the names, for example:
+// if enemy.king == "Inanna" return
+// ----------------------------------
+//if enemy.alliance == "YOUR_ALLIANCE_HERE" return
+//if enemy.alliance == "YOUR_ALT_ALLIANCE_HERE" return
+//if enemy.king == "YOUR_NAME_HERE" return
+//if enemy.king == "YOUR_FRIEND'S_NAME_HERE" return
+// ----------------------------------
+// End of the section to add exemptions for attack warnings. Don't delete stuff below :P
+
+message = "City " + cm.name + " @ " + cm.coords + " is under attack from " + enemy.king + " in alliance " + enemy.alliance + ". Save me!!!"
+goto yellIt
+
+label getfood
+message = "City " + cm.name + " @ " + cm.coords + " is at " + floor(cm.resource.food.amount / cm.resource.troopCostFood) + " hours of food. Feed me Seymour!!!"
+goto yellIt
+
+label gatesbroken
+message = "City " + cm.name + " @ " + cm.coords + " has broken gates!! Please let me know ASAP or log me on and save me!!!"
+goto yellIt
+
+label yellIt
+echo message
+execute "whisper justjc " + message
+execute "whisper teamalice " + message
+sleep 300
+return
