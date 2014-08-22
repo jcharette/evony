@@ -1,22 +1,42 @@
-// start and end coords to search for reds
-TOP_COORDS = "600,400"
-BOTTOM_COORDS = "799,599"
-//TOP_COORDS = "123,535"
-//BOTTOM_COORDS = "126,540"
+// This script will find any available flats near any red city within the state given.
+// IT DOES TAKE A LONG TIME TO RUN.. but it can be worth it.  ;)
 
+// state to search using index below
+state = 3
+//  0=Friesland        1=Saxony      2=North March   3=Bohemia
+//  4=Lower Lorraine   5=Franconia   6=Thuringia     7=Moravia
+//  8=Upper Lorraine   9=Swabia     10=Bavaria      11=Carinthia
+// 12=Burgundy        13=Lombardy   14=Tuscany      15=Romagna
+
+// Distance from city to look for available flats
 FLAT_DISTANCE = 3
 
-/////////////
-//  MAIN
-/////////////
+// change scancmd to "rescanrec" to force a rescan every run or "scanrec" to refresh map only if not loaded
+scancmd = "scanrec"
+
+//////////////////////////////////////////////
+//  MAIN  - DONT CHANGE ANYTHING UNDER HERE
+/////////////////////////////////////////////
+
+if ((state < 0) + (state > 15)) > 0 goto invalidState
+echo "Scanning "+States[state]+" for reds"
+
+sx = (state MOD 4) * 200
+sy = floor(state / 4) * 200
+
+TOP_COORDS = sx + "," + sy
+BOTTOM_COORDS = (sx + 199) + "," + (sy + 199)
 
 TopCoordArray = TOP_COORDS.split(",")
 BottomCoordArray = BOTTOM_COORDS.split(",")
 j=0
 
+coords = sx + "," + sy + " " + (sx + 199) + "," + (sy + 199)
+execute "echo 'Searching ["+coords+"]'"
+@execute scancmd+" "+coords
+
 // find castles, ignoring NPCs, zero based array
 CastleList = CastlesInRectangle( TopCoordArray[0], TopCoordArray[1], BottomCoordArray[0], BottomCoordArray[1], true, false )
-
 echo "Found " + CastleList.length + " cities within region"
 
 label ShowReds
@@ -33,30 +53,23 @@ y = GetY(id)
 label notyet
 detail = GetDetailInfo( id, true )
 ifgoto detail == null notyet
-echo "- #" + j + " (" + x + "," + y + ") -- lord=" + detail.userName "alliance=" + detail.allianceName
+// check if red, if not, test next
 ifgoto detail.relation!=3 ShowReturn
-echo "-- FOUND RED --"
 gosub SearchFlatsAroundCastle 
 label ShowReturn
 return
 
 label SearchFlatsAroundCastle
 i = 1
-echo "-- Searching for open flats --"
-label SearchFlats
-Flats = FindField( GetX(id), GetY(id), i, 10 )
-j = 0
-if Flats.length>0 goto ShowFlats
-if i>MAX_DISTANCE goto SearchForFlatsEnd
-i = i+1
-goto SearchFlats
-
+Flats = FindField( GetX(id), GetY(id), FLAT_DISTANCE, 10 )
+// test for none, return if so
+if Flats.length = 0 return
+// echo "-- Searching for open flats --"
+echo "- #" + j + " (" + x + "," + y + ") -- lord=" + detail.userName "alliance=" + detail.allianceName
 label ShowFlats
-execute "print Distance: " + i + " Flat found at (" + GetX(Flats[j]) + "," + GetY(Flats[j]) + ")"
-j = j+1
-if j<Flats.length goto ShowFlats
-
-label SearchForFlatsEnd
+echo GetX(Flats[j]) + "," + GetY(Flats[j])
+j = j + 1
+if j < Flats.length goto ShowFlats
 return
 
 
