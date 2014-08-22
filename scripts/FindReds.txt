@@ -2,7 +2,7 @@
 // IT DOES TAKE A LONG TIME TO RUN.. but it can be worth it.  ;)
 
 // state to search using index below
-state = 3
+state = 2
 //  0=Friesland        1=Saxony      2=North March   3=Bohemia
 //  4=Lower Lorraine   5=Franconia   6=Thuringia     7=Moravia
 //  8=Upper Lorraine   9=Swabia     10=Bavaria      11=Carinthia
@@ -53,6 +53,12 @@ y = GetY(id)
 label notyet
 detail = GetDetailInfo( id, true )
 ifgoto detail == null notyet
+if detail.state == 1 stateString = "Peace"
+if detail.state == 2 stateString = "Truce"
+if detail.state == 3 stateString = "Beginner"
+if detail.state == 5 stateString = "Holiday"
+if detail.state == 6 stateString = "Dream Truce"
+echo "- #{j} ({x},{y}) - lord={detail.userName} alliance={detail.allianceName} state={stateString}"
 // check if red, if not, test next
 ifgoto detail.relation!=3 ShowReturn
 gosub SearchFlatsAroundCastle 
@@ -65,7 +71,7 @@ Flats = FindField( GetX(id), GetY(id), FLAT_DISTANCE, 10 )
 // test for none, return if so
 if Flats.length = 0 return
 // echo "-- Searching for open flats --"
-echo "- #" + j + " (" + x + "," + y + ") -- lord=" + detail.userName "alliance=" + detail.allianceName
+j=0
 label ShowFlats
 echo GetX(Flats[j]) + "," + GetY(Flats[j])
 j = j + 1
