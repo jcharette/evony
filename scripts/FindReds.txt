@@ -2,7 +2,7 @@
 // IT DOES TAKE A LONG TIME TO RUN.. but it can be worth it.  ;)
 
 // state to search using index below
-state = 2
+state = 3
 //  0=Friesland        1=Saxony      2=North March   3=Bohemia
 //  4=Lower Lorraine   5=Franconia   6=Thuringia     7=Moravia
 //  8=Upper Lorraine   9=Swabia     10=Bavaria      11=Carinthia
@@ -71,11 +71,11 @@ Flats = FindField( GetX(id), GetY(id), FLAT_DISTANCE, 10 )
 // test for none, return if so
 if Flats.length = 0 return
 // echo "-- Searching for open flats --"
-j=0
+a=0
 label ShowFlats
-echo GetX(Flats[j]) + "," + GetY(Flats[j])
-j = j + 1
-if j < Flats.length goto ShowFlats
+echo GetX(Flats[a]) + "," + GetY(Flats[a])
+a = a + 1
+if a < Flats.length goto ShowFlats
 return
 
 
