@@ -58,6 +58,7 @@ if detail.state == 2 stateString = "Truce"
 if detail.state == 3 stateString = "Beginner"
 if detail.state == 5 stateString = "Holiday"
 if detail.state == 6 stateString = "Dream Truce"
+ifgoto detail.relation != 3 ShowReturn
 echo "- #{j} ({x},{y}) - lord={detail.userName} alliance={detail.allianceName} state={stateString}"
 // check if red, if not, test next
 ifgoto detail.relation!=3 ShowReturn
