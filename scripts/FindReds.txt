@@ -8,6 +8,9 @@ state = 3
 //  8=Upper Lorraine   9=Swabia     10=Bavaria      11=Carinthia
 // 12=Burgundy        13=Lombardy   14=Tuscany      15=Romagna
 
+// set to false if you only want a red report
+search_flats = false
+
 // Distance from city to look for available flats
 FLAT_DISTANCE = 3
 
@@ -58,10 +61,11 @@ if detail.state == 2 stateString = "Truce"
 if detail.state == 3 stateString = "Beginner"
 if detail.state == 5 stateString = "Holiday"
 if detail.state == 6 stateString = "Dream Truce"
+ifgoto detail.relation != 3 ShowReturn
 echo "- #{j} ({x},{y}) - lord={detail.userName} alliance={detail.allianceName} state={stateString}"
 // check if red, if not, test next
 ifgoto detail.relation!=3 ShowReturn
-gosub SearchFlatsAroundCastle 
+if search_flats == "true" gosub SearchFlatsAroundCastle 
 label ShowReturn
 return
 
