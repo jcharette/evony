@@ -56,12 +56,12 @@ y = GetY(id)
 label notyet
 detail = GetDetailInfo( id, true )
 ifgoto detail == null notyet
+ifgoto detail.relation != 3 ShowReturn
 if detail.state == 1 stateString = "Peace"
 if detail.state == 2 stateString = "Truce"
 if detail.state == 3 stateString = "Beginner"
 if detail.state == 5 stateString = "Holiday"
 if detail.state == 6 stateString = "DreamTruce"
-ifgoto detail.relation != 3 ShowReturn
 echo "{x},{y},{detail.userName},{detail.allianceName},{stateString}"
 // check if red, if not, test next
 ifgoto detail.relation!=3 ShowReturn
