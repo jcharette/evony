@@ -1,0 +1,64 @@
+set mainlord "JustJC"
+label autorun
+set main 91,342
+set recalTime 3 
+label again
+ifgoto city.resource.food.amount >2000000000 callmain
+//ifgoto city.hasEnemyArmies checkcallmain
+sleep 120
+goto again
+
+label checkcallmain
+x = 0
+label next
+ifgoto x >= city.enemyArmies.length skiplist
+echo city.enemyArmies[x].king
+ifgoto city.enemyArmies[x].king != %mainlord% callmain
+x = x+1
+ifgoto x < city.hasEnemyArmies next
+label skiplist
+goto again
+
+label callmain
+mil = round(city.resource.food.amount/1000000) + round(city.resource.wood.amount/1000000)
+time=date().time
+ifgoto mil<10000 milfine 
+mil = 10000
+label milfine
+execute "attack %main% any t:"+mil
+label waitAttStart
+sleep 10
+ifgoto (date().time-time)/1000/60 >= %recalTime% recallEnd
+
+//===== wait for incomming from main =====
+x = 0
+incomming =0
+label next2
+ifgoto x >= city.enemyArmies.length skiplist2
+ifgoto city.enemyArmies[x].king != %mainlord% checknext2
+incomming = 1
+label checknext2
+x = x+1
+ifgoto x < city.hasEnemyArmies next2
+label skiplist2
+ifgoto !incomming waitAttStart
+
+label recallEnd
+recall %main% 
+label waitAttEnd
+sleep 10
+
+//===== wait for incomming from main to end =====
+x = 0
+incomming =0
+label next3
+ifgoto x >= city.enemyArmies.length skiplist3
+ifgoto city.enemyArmies[x].king != %mainlord% checknext3
+incomming = 1
+label checknext3
+x = x+1
+ifgoto x < city.hasEnemyArmies next3
+label skiplist3
+ifgoto incomming waitAttEnd
+
+goto again

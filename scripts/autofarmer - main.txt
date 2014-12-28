@@ -1,0 +1,72 @@
+label autorun
+set pickup "WhiteRangr"
+set alt 91,341
+
+label again
+
+
+ifgoto city.hasEnemyArmies gopickup
+label sleepAgain
+sleep 120
+goto again
+
+label gopickup
+x = 0
+incomming =0
+label next
+ifgoto x >= city.enemyArmies.length skiplist1
+ifgoto city.enemyArmies[x].king!=%pickup% checknext1
+tra = (city.enemyArmies[x].troop.carriage/10)
+incomming = 1
+label checknext1
+x = x+1
+ifgoto x < city.hasEnemyArmies next
+label skiplist1
+ifgoto !incomming sleepAgain
+
+//==== count idle heroes =====
+label countagain
+count = 0
+x = 0
+label countmore
+ifgoto city.heroes.length == 0 skiplist
+echo city.heroes[x].name city.heroes[x].status
+ifgoto city.heroes[x].status skipcount
+count = count + 100
+label skipcount
+x = x+1
+ifgoto x != city.heroes.length countmore
+label skiplist
+runs = tra
+ifgoto runs<=300 wereGood
+runs = 300
+label wereGood
+ifgoto count<runs countagain
+ifgoto count>=runs send
+
+//==== send enough trannys to clean out Pickup =====
+label send
+config wartown:1
+label sendagain
+ifgoto runs<100 sendless
+attack %alt% any t:100k
+runs = runs - 100
+ifgoto runs>0 sendagain
+label sendless
+execute "attack %alt% any t:"+runs+"k"
+config wartown:0
+
+label waitAttEnd
+sleep 10
+x = 0
+incomming =0
+label next2
+ifgoto x >= city.enemyArmies.length skiplist2
+ifgoto city.enemyArmies[x].king != %pickup% checknext2
+incomming = 1
+label checknext2
+x = x+1
+ifgoto x < city.hasEnemyArmies next2
+label skiplist2
+ifgoto incomming waitAttEnd
+goto again
