@@ -1,0 +1,173 @@
+label autorun
+
+//-----Early Warnings 6.0.e-----\\
+
+//-----Settings-----\\
+MainLordName = "JustJC"   //Your Primary Account Name
+
+PrimaryAlliance = "0N3"   //Your Primary Alliance
+
+PhoneNumber = "508-813-9525"   //A phone number where you can be reached (I recommend using a VOIP number such as google voice).
+
+PhoneNumberLocation = "United States"   //The location that your phone number is based in. Please spell out entire country to avoid confusion.
+
+EmailAddress = "jon.charette@gmail.com"   //An email address where you can be reached.
+
+sleeptime = "5"   //The number of minutes you would like this script to sleep before starting again.
+
+myGeneralSettings = ["on","on","off"]   //Version Check, Clear System Mail, Truce Item Check (If Truce Item Check is on, it will purchase a Truce if there are none and there are coins available.)
+myScoutSettings = ["on","on","on","on","on","off"]   //Alliance Chat, Display Contact Information, Audio Alert, Whipser Alert, Mail Alert, Email Alert
+myAttackSettings = ["on","on","on","on","on","off","on"]   //Alliance Chat, Display Contact Information, Audio Alert, Whipser Alert, Mail Alert, Email Alert, Teammate Alert
+myGateSettings = ["on","on","on","on","on","off"]   //Alliance Chat, Display Contact Information, Audio Alert, Whipser Alert, Mail Alert, Email Alert
+DisplayContactInformation = "Please text me at " +PhoneNumber+ " (" +PhoneNumberLocation+") or "+EmailAddress+""  //Change this only if you do not wish to use the default.
+//Glossary: birdcrewgaming.com/early-warnings-change-log-and-glossary.html
+
+//-----Safe Lists-----\\
+friendsScout = ["RedRum(440,489)","B2(91,342)"]   //Cities that you do not care scout you (i.e. the city you attack your dump city with).
+
+friendsAttack = [MainLordName,"TeamAlice"]   //Accounts that you do not care attack you (i.e. your own alts). The name you set as Primary Lord Name above is auto filled into this list.
+
+//-----DO NOT CHANGE BELOW THIS LINE-----\\
+label VersionCheck
+if myGeneralSettings[0] = "off" goto ScoutReportCheck
+thisversion = "6.0.e"
+get "http://pastebin.com/download.php?i=4WrSRm4m"
+if $result = thisversion echo "You are running the most current version of BC's Early Warning Script Version:"thisversion""
+if $result != thisversion echo "You should consider updating to a more current version of BC's Early Warning Script found at earlywarnings.birdcrewgaming.com. Change Log: birdcrewgaming.com/early-warnings-change-log-and-glossary.html"
+
+label ScoutReportCheck
+warning = "DEF Scout Reports "
+last = -1
+
+time = sleeptime*60
+brokenGateTimer=[0,0,0,0,0,0,0,0,0,0]
+outofCoinandTruceTimer=[0,0,0,0,0,0,0,0,0,0]
+
+label start
+x = 0
+command "quickarmyreport 1"
+reports = $result.split("\n").splice(1)
+first = floor((reports[0]+"[0]").split("[")[1].split("]")[0])
+if last < 0 goto done
+
+label sort
+line = reports.shift()
+if floor((line+"[0]").split("[")[1].split("]")[0]) <= last goto done
+scouted = line.split(warning)[1]
+if !scouted goto sort
+scoutedby = scouted.split(" ")[1]
+scoutedcity = scouted.split(" ")[3]
+
+goto SafeList-Scout
+
+label done
+if first > last last = first
+goto todolist
+
+label todolist
+cs = cities[x]
+cm = cs.cityManager
+if ( m_context.cities[x].cityManager.enemyArmies.length > 0 ) gosub SafeList-Attack
+if cities[x].cityManager.buff("ForceopenclosegateBuff") gosub gateWarning
+if cm.resource.food.amount / cm.resource.troopCostFood < 5 gosub getfood
+
+x = x + 1
+if (x < m_context.cities.length) goto todolist
+
+goto accountMaintenance
+
+//-----SCOUT WARNINGS-----\\
+label scoutWarning
+subject = "Scout Warning"
+message1 = "Help, "+player.playerInfo.userName+" has been scouted by city " + scoutedby + " at city " + scoutedcity
+if(myScoutSettings[0] = "on") if(player.playerInfo.alliance != null) execute "alliancechat " + message1
+if(myScoutSettings[1] = "on") if(player.playerInfo.alliance != null) execute "alliancechat " + DisplayContactInformation
+if(myScoutSettings[2] = "on") say message1
+if(myScoutSettings[3] = "on") if(player.playerInfo.userName != MainLordName) execute "whisper "+MainLordName+" "+ message1
+if(myScoutSettings[4] = "on") if(player.playerInfo.userName != MainLordName) command "mail "+MainLordName+" ScoutAlert "+message1
+
+if(myScoutSettings[5] = "on") gosub emailSubRoutine
+goto sort
+
+//-----ATTACK WARNINGS-----\\
+label attackWarning
+subject = "Attack Warning"
+message1a = "Help, "+player.playerInfo.userName+"'s city "+m_context.cities[x].cityManager.name+" ("+m_context.cities[x].cityManager.x + " " + m_context.cities[x].cityManager.y+") is under attack by "+m_context.cities[x].cityManager.enemyArmies[0].king+" in alliance "+m_context.cities[x].cityManager.enemyArmies[0].alliance+". My city is at "+m_context.cities[x].cityManager.resource.support+"/"+m_context.cities[x].cityManager.resource.complaint+"! " + "My gates are operating normally and are currently " + ["auto controlled.","open.","closed."][cities[x].cityManager.GateControl]
+message1b = "Help, "+player.playerInfo.userName+"'s city "+m_context.cities[x].cityManager.name+" ("+m_context.cities[x].cityManager.x + " " + m_context.cities[x].cityManager.y+") is under attack by "+m_context.cities[x].cityManager.enemyArmies[0].king+" in alliance "+m_context.cities[x].cityManager.enemyArmies[0].alliance+". My city is at "+m_context.cities[x].cityManager.resource.support+"/"+m_context.cities[x].cityManager.resource.complaint+"! " + "My gates are broken and are currently " + ["auto controlled.","open.","closed."][cities[x].cityManager.GateControl]
+message1c = "Help, "+player.playerInfo.userName+"'s city "+m_context.cities[x].cityManager.name+" ("+m_context.cities[x].cityManager.x + " " + m_context.cities[x].cityManager.y+") is under attack by "+m_context.cities[x].cityManager.enemyArmies[0].king+" in alliance "+m_context.cities[x].cityManager.enemyArmies[0].alliance+"."
+message1e = "My city is at "+m_context.cities[x].cityManager.resource.support+"/"+m_context.cities[x].cityManager.resource.complaint+"! My gates are operating normally and are currently " + ["auto controlled.","open.","closed."][cities[x].cityManager.GateControl]
+message1f = "My city is at "+m_context.cities[x].cityManager.resource.support+"/"+m_context.cities[x].cityManager.resource.complaint+"! My gates are broken and are currently " + ["auto controlled.","open.","closed."][cities[x].cityManager.GateControl]
+if(cities[x].cityManager.buff("ForceopenclosegateBuff") = null) message1 = message1a
+if(cities[x].cityManager.buff("ForceopenclosegateBuff") != null) message1 = message1b
+if(cities[x].cityManager.buff("ForceopenclosegateBuff") = null) message1d = message1e
+if(cities[x].cityManager.buff("ForceopenclosegateBuff") != null) message1d = message1f
+message2 = "Hey, my main account is "+MainLordName+", please recall."
+if(myAttackSettings[6] = "on") if(m_context.cities[x].cityManager.enemyArmies[0].alliance = PrimaryAlliance) execute "whisper "+m_context.cities[x].cityManager.enemyArmies[0].king+ " " + message2
+if(myAttackSettings[0] = "on") if(player.playerInfo.alliance != null) execute "alliancechat " + message1
+if(myAttackSettings[1] = "on") if(player.playerInfo.alliance != null) execute "alliancechat " + DisplayContactInformation
+if(myAttackSettings[2] = "on") say message1c
+if(myAttackSettings[3] = "on") if(player.playerInfo.userName != MainLordName) execute "whisper "+MainLordName+" "+ message1c
+if(myAttackSettings[3] = "on") if(player.playerInfo.userName != MainLordName) execute "whisper "+MainLordName+" "+ message1d
+if(myAttackSettings[4] = "on") if(player.playerInfo.userName != MainLordName) command "mail "+MainLordName+" AttackAlert "+message1
+if(myAttackSettings[5] = "on") gosub emailSubRoutine
+return
+
+//-----GATE WARNINGS-----\\
+label gateWarning
+if brokenGateTimer[x] + (60*60*1000) < date().time dummy=brokenGateTimer.splice(x,1,0)
+if brokenGateTimer[x] return
+dummy = brokenGateTimer.splice(x,1,date().time)
+subject = "Broken Gate Warning"
+message1 = "Help, "+player.playerInfo.userName+"'s city "+m_context.cities[x].cityManager.name+ " has broken gates."
+if(myGateSettings[0] = "on") if(player.playerInfo.alliance != null) execute "alliancechat " + message1
+if(myGateSettings[1] = "on") if(player.playerInfo.alliance != null) execute "alliancechat " + DisplayContactInformation
+if(myGateSettings[2] = "on") say message1
+if(myGateSettings[3] = "on") if(player.playerInfo.userName != MainLordName) execute "whisper "+MainLordName+" "+ message1
+if(myGateSettings[4] = "on") if(player.playerInfo.userName != MainLordName) command "mail "+MainLordName+" BrokenGates "+message1
+if(myGateSettings[5] = "on") gosub emailSubRoutine
+return
+
+//-----SAFE LISTS-----\\
+label SafeList-Scout
+if friendsScout.indexOf(scoutedby) >=0 goto sort
+goto scoutWarning
+
+label SafeList-Attack
+if friendsAttack.indexOf(m_context.cities[x].cityManager.enemyArmies[0].king) >= 0 return
+goto attackWarning
+
+//-----Email SubRoutine-----\\
+label emailSubRoutine
+URL = "http://localhost:82/NEATOmail.php"
+send2mail = EmailAddress
+send2name = MainLordName
+body = message1
+data = {neatokey:Config.neatokey,send2mail:send2mail,send2name:send2name,subject:subject,body:body}
+post URL data
+return
+
+//----Food SubRoutine----\\
+label getfood
+message = "City " + cm.name + " @ " + cm.coords + " is at " + floor(cm.resource.food.amount / cm.resource.troopCostFood) + " hours of food. Help!!!"
+echo message
+execute "whisper " + MainLordName + " " + message
+execute "whisper TeamAlice " + message
+return
+
+//-----Account Maintenance-----\\
+label accountMaintenance
+
+label TruceandCoinCheck
+if outofCoinandTruceTimer[x] + (480*60*1000) < date().time dummy3 = outofCoinandTruceTimer.splice(x,1,0)
+if outofCoinandTruceTimer[x] goto sleep
+dummy3 = outofCoinandTruceTimer.splice(x,1,date().time)
+subject = "Truce Alert"
+message1 = "Help, "+player.playerInfo.userName+" is out of truces and low and coins."
+if(myGeneralSettings[2] = "on") if(m_context.ItemCount("player.peace.1") = 0) if(player.playerInfo.medal > 29) buyitem Truce Agreement
+if(myGeneralSettings[2] = "on") if(m_context.ItemCount("player.peace.1") = 0) if(player.playerInfo.medal < 29) gosub emailSubRoutine
+
+if(myGeneralSettings[1] = "on") command "listsystemmail"
+
+label sleep
+execute "sleep " + time
+goto start
