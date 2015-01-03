@@ -1,8 +1,7 @@
-cityToSpam = "562,689"
+lagCorrection = 1
+cityToSpam = "562,688"
 cavAttack = "c:5k,s:5k"
 sbAttack = "s:125k"
-spammers = "any:level<20"
-lagCorrection = 2
 scouts = "s:125k"
 
 ////////////////////////////////////////////////////
@@ -10,9 +9,13 @@ execute "scout {cityToSpam} any {scouts}"
 label die
 getspamhero
 execute "attack {cityToSpam} {spammers} {cavAttack}"
-t=date($result.reachTime-(lagCorrection*1000)).toString().split(" ")[3]
+execute "sleep {delay}"
+time=date($result.reachTime-(lagCorrection*1000)).toString().split(" ")[3]
 getspamhero
-execute "scout {cityToSpam} any {scouts} @:"+t
-execute "attack {cityToSpam} {spammers} {sbAttack} f:0 @:"+t
-if m_city.AnyIdleHero({spammers}) repeat
+execute "scout {cityToSpam} any {scouts}"
+execute "attack {cityToSpam} {spammers} {sbAttack}"
+goto die
+execute "scout {cityToSpam} any {scouts} @:{time}"
+execute "attack {cityToSpam} {spammers} {sbAttack} f:0 @:{time}"
+if m_city.AnyIdleHero("{spammers}") repeat
 goto die
