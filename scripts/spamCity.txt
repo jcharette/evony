@@ -3,18 +3,19 @@ cityToSpam = "562,688"
 cavAttack = "c:5k,s:5k"
 sbAttack = "s:125k"
 scouts = "s:125k"
-
-////////////////////////////////////////////////////
+//////////////////////////////
+// No Changes needed below //
+/////////////////////////////
 execute "scout {cityToSpam} any {scouts}"
 label die
 getspamhero
 execute "attack {cityToSpam} {spammers} {cavAttack}"
+// compute land time
 time=date($result.reachTime-(lagCorrection*1000)).toString().split(" ")[3]
-getspamhero
-execute "scout {cityToSpam} any {scouts}"
-execute "attack {cityToSpam} {spammers} {sbAttack}"
-goto die
+
 execute "scout {cityToSpam} any {scouts} @:{time}"
+label sbAgain
+getspamhero
 execute "attack {cityToSpam} {spammers} {sbAttack} f:0 @:{time}"
-if m_city.AnyIdleHero("{spammers}") repeat
+ifgoto m_city.AnyIdleHero("{spammers}") sbAgain
 goto die
