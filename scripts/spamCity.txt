@@ -1,8 +1,21 @@
-lagCorrection = 1
+// city to hit
 cityToSpam = "562,688"
+
+// first attack, opener
 cavAttack = "c:5k,s:5k"
+
+// sb attack
 sbAttack = "s:125k"
+
+// scouts to send
 scouts = "s:125k"
+
+// spam hereos to use
+spammers = "any:level<20"
+
+// seconds to adjust for lag.
+lagCorrection = 1
+
 //////////////////////////////
 // No Changes needed below //
 /////////////////////////////
