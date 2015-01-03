@@ -9,7 +9,6 @@ execute "scout {cityToSpam} any {scouts}"
 label die
 getspamhero
 execute "attack {cityToSpam} {spammers} {cavAttack}"
-execute "sleep {delay}"
 time=date($result.reachTime-(lagCorrection*1000)).toString().split(" ")[3]
 getspamhero
 execute "scout {cityToSpam} any {scouts}"
