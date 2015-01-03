@@ -1,0 +1,19 @@
+cityToSpam = "562,688"
+cavAttack = "c:5k,s:5k"
+sbAttack = "s:125k"
+spammers = "any:level<20"
+
+////////////////////////////////////////////////////
+cavtime = city.getTravelTime(city.fieldId, GetFieldId(cityToSpam), GetTroops("c:1"), 5)
+scouttime = city.getTravelTime(city.fieldId, GetFieldId(cityToSpam), GetTroops("s:1"), 5)
+delay = cavtime - scouttime - 6
+
+execute "scout {cityToSpam} any s:100k"
+label die
+getspamhero
+execute "attack {cityToSpam} {spammers} {cavAttack}"
+execute "sleep {delay}"
+getspamhero
+execute "scout {cityToSpam} any s:125k"
+execute "attack {cityToSpam} {spammers} {sbAttack}"
+goto die
