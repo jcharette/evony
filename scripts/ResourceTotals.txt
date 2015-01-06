@@ -1,0 +1,33 @@
+// =======================================================
+// Troop & Resource Totals For Each City & Entire Account
+// Originally by romulus
+// =======================================================
+
+// set this to 1 if you want individual city troop/res counts displayed too, 0 if not
+showcities = 0
+
+mycities = cities.concat()
+echo "ACCOUNT TOTALS: Found " + mycities.length + " castle(s)"
+echo "Please wait. Calculating..."
+t = GetTroops("a:0")
+res = GetResources("f:0")
+pop = 0
+popmax = 0
+up = 0
+
+label mainLoop
+c = mycities.shift()
+if !c goto end
+c = c.cityManager
+tr = c.getAvailableTroop()
+up = up + c.resource.troopCostFood
+cres = c.resetEstResource()
+popmax = popmax + c.resource.maxPopulation
+pop = pop + c.resource.curPopulation
+if showcities echo "City " + c.name + " - " + TroopBeanToString(tr, ",") + " (Upkeep: " + FormatNumber(c.resource.troopCostFood) + ")\nGold: " + FormatNumber(cres.gold) + " Food: " + FormatNumber(cres.food) + " Wood: " + FormatNumber(cres.wood) + " Stone: " + FormatNumber(cres.stone) + " Iron: " + FormatNumber(cres.iron) + " Population: " + floor(pop) + " of " + floor(popmax)
+dummy = tr.addTo(t)
+dummy = cres.addTo(res)
+goto mainLoop
+
+label end
+echo "===========================\nTOTAL TROOPS\n===========================\n" + TroopBeanToString(t, "\n") + "\n(Upkeep: " + FormatNumber(up) + ")\n===========================\nTOTAL RESOURCES\n===========================\nGold: " + FormatNumber(res.gold) + "\nFood: " + FormatNumber(res.food) + "\nWood: " + FormatNumber(res.wood) + "\nStone: " + FormatNumber(res.stone) + "\nIron: " + FormatNumber(res.iron) + "\n(Pop: " + FormatNumber(pop) + " of " + FormatNumber(popmax) + ")\n==========================="
