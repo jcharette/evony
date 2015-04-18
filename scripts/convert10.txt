@@ -62,39 +62,39 @@ label dropInn
 demo inn level10
 demo inn
 repeat 8
-gosubreturn
+return
 
 label removeFarms
 demo f level10
 execute "repeat " + farmsToRemove
 demo f
 execute "repeat " + farmsToRemove * 9
-gosubreturn
+return
 
 label removeSawmills
 demo s level10
 demo s
 repeat 9
-gosubreturn
+return
 
 label removeIronmines
 demo i level10
 demo i
 repeat 9
-gosubreturn
+return
 
 label removeQuarries
 demo q level10
 demo q
 repeat 9
-gosubreturn
+return
 
 label buildFarms
 create f
 execute "repeat " + farmsToAdd
 upgrade f lo
 execute "repeat " + (farmsToAdd * (RESOURCE_FIELD_LEVEL - 1))
-gosubreturn
+return
 
 label buildFarms10
 create f
@@ -103,14 +103,14 @@ upgrade f lo
 execute "repeat " + (farmsToAdd * (RESOURCE_FIELD_LEVEL - 2))
 upgrade f level9
 execute "repeat " + farmsToAdd
-gosubreturn
+return
 
 label buildSawmills
 create s
 execute "repeat " + sawmillsToAdd
 upgrade s lo
 execute "repeat " + (sawmillsToAdd * (RESOURCE_FIELD_LEVEL - 1))
-gosubreturn
+return
 
 label buildSawmills10
 create s
@@ -119,14 +119,14 @@ upgrade s lo
 execute "repeat " + (sawmillsToAdd * (RESOURCE_FIELD_LEVEL - 2))
 upgrade s level9
 execute "repeat " + sawmillsToAdd
-gosubreturn
+return
 
 label buildIronmines
 create i
 execute "repeat " + ironminesToAdd
 upgrade i lo
 execute "repeat " + (ironminesToAdd * (RESOURCE_FIELD_LEVEL - 1))
-gosubreturn
+return
 
 label buildIronmines10
 create i
@@ -135,14 +135,14 @@ upgrade i lo
 execute "repeat " + (ironminesToAdd * (RESOURCE_FIELD_LEVEL - 2))
 upgrade i level9
 execute "repeat " + ironminesToAdd
-gosubreturn
+return
 
 label buildQuarries
 create q
 execute "repeat " + quarriesToAdd
 upgrade q lo
 execute "repeat " + (quarriesToAdd * (RESOURCE_FIELD_LEVEL - 1))
-gosubreturn
+return
 
 label buildQuarries10
 create q
@@ -151,7 +151,7 @@ upgrade q lo
 execute "repeat " + (quarriesToAdd * (RESOURCE_FIELD_LEVEL - 2))
 upgrade q level9
 execute "repeat " + quarriesToAdd
-gosubreturn
+return
 
 label removeFoWsSt
 demo fo level10
@@ -163,21 +163,21 @@ repeat 9
 demo ws level10
 demo ws
 repeat 9
-gosubreturn
+return
 
 label removeCottages
 demo c level10
 execute "repeat " + cottagesToRemove
 demo c
 execute "repeat " + cottagesToRemove * 9
-gosubreturn
+return
 
 label buildCottages
 create c
 execute "repeat " + cottagesToAdd
 upgrade c lo
 execute "repeat " + (cottagesToAdd * (RESOURCE_FIELD_LEVEL - 1))
-gosubreturn
+return
 
 label buildCottages10
 create c
@@ -186,14 +186,14 @@ upgrade c lo
 execute "repeat " + (cottagesToAdd * (RESOURCE_FIELD_LEVEL - 2))
 upgrade c level9
 execute "repeat " + cottagesToAdd
-gosubreturn
+return
 
 label buildBarracks
 create b
 execute "repeat " + barracksToAdd
 upgrade b lo
 execute "repeat " + (barracksToAdd * (RESOURCE_FIELD_LEVEL - 1))
-gosubreturn
+return
 
 label buildBarracks10
 create b
@@ -202,7 +202,7 @@ upgrade b lo
 execute "repeat " + (barracksToAdd * (RESOURCE_FIELD_LEVEL - 2))
 upgrade b level9
 execute "repeat " + barracksToAdd
-gosubreturn
+return
 
 label resourceBuildError
 echo "Number of resources fields needs to total 40"
