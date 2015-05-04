@@ -1,0 +1,34 @@
+label start
+trainhero = "berton"
+npclevel = 5
+
+// dont change below this
+CYCLE_TIME = 60
+starttime = date()
+npcs = FindField( city.x, city.y, 5, 12, npclevel ).sort(city.compareByDistanceToCastle)
+
+label hitnpcs
+execute "waithero {trainhero}"
+timeDiffMin = (date()-starttime)/1000
+if( timeDiffMin >(CYCLE_TIME*60) ) goto start
+
+npcToHit = npcs.shift()
+npcLoc = FieldIdToCoords( npcToHit )
+if npcLoc = "0,0" goto start
+gosub settroops
+
+echo "training {trainhero} on {npcLoc} with {troopstr}"
+execute "attack {npcLoc} {trainhero} {troopstr}"
+uplevelheroes
+goto hitnpcs
+
+label settroops
+if city.troop.ballista>500 goto start
+if city.troop.carriage>550 goto start
+if city.troop.militia>1k goto usewars
+troopstr = "b:500,t:550"
+return
+label usewars
+troopstr = "b:500,t:550,w:1k"
+return
+
