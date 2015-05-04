@@ -23,8 +23,8 @@ uplevelheroes
 goto hitnpcs
 
 label settroops
-if city.troop.ballista>500 goto start
-if city.troop.carriage>550 goto start
+if city.troop.ballista<500 goto start
+if city.troop.carriage<550 goto start
 if city.troop.militia>1k goto usewars
 troopstr = "b:500,t:550"
 return
