@@ -7,11 +7,11 @@ MainLordName = "JustJC"   //Your Primary Account Name
 
 PrimaryAlliance = "0N3"   //Your Primary Alliance
 
-PhoneNumber = "508-813-9525"   //A phone number where you can be reached (I recommend using a VOIP number such as google voice).
+PhoneNumber = "xxx-xxx-xxxx"   //A phone number where you can be reached (I recommend using a VOIP number such as google voice).
 
 PhoneNumberLocation = "United States"   //The location that your phone number is based in. Please spell out entire country to avoid confusion.
 
-EmailAddress = "jon.charette@gmail.com"   //An email address where you can be reached.
+EmailAddress = "foo@gmail.com"   //An email address where you can be reached.
 
 sleeptime = "5"   //The number of minutes you would like this script to sleep before starting again.
 
